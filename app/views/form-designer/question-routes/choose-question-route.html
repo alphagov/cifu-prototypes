@@ -1,0 +1,83 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Choose the type of question route you want' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageTitle }}: {{ data.formTitle or '[formTitle]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="../your-questions" target="_parent">
+    Back to your questions
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form id="form" class="form" method="post" novalidate>
+
+      {% if containsErrors %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorList
+      }) }}
+      {% endif %}
+
+      <span class="govuk-caption-l">{{ data.formTitle or '[formTitle]' }}</span>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      <p class="govuk-body">
+        You can use different types of question route to create:
+      </p>
+
+      <ul class="govuk-list govuk-list--bullet">
+        <li>
+          <strong>repeat questions</strong> - this lets someone answer a group of related questions more than once (sometimes known as ‘add another’)
+        </li>
+        <li>
+          <strong>skip questions</strong> - this sends people directly to the question or page you want by ‘skipping’ questions they do not need to answer
+        </li>
+      </ul>
+
+      {{ govukRadios({
+        name: "chooseRouteType",
+        fieldset: {
+          legend: {
+            text: "Which route do you want to create?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        items: [
+          {
+            value: "repeating",
+            text: "Repeat-questions route"
+          },
+          {
+            value: "skip",
+            text: "Skip-questions route"
+          }
+        ],
+        errorMessage: { text: errors['chooseRouteType'].text } if errors['chooseRouteType'].text 
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="../your-questions">Go to your questions</a>
+      </p>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script type="text/javascript">
+  // call function from `assets/javascripts/application.js`
+  // removeSuccessNotification();
+</script>
+{% endblock %}

@@ -147,28 +147,31 @@
           {% if pageData['type'] != 'select' %}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-            {{ govukCheckboxes({
+            {{ govukRadios({
               idPrefix: "questionOptional",
               name: "questionOptional",
               fieldset: {
                 legend: {
-                  text: "Make this question optional",
+                  text: "Should this question be mandatory or optional?",
                   classes: "govuk-fieldset__legend--m"
                 }
               },
-              hint: {
-                text: "All questions are mandatory unless you make them optional."
-              },
               items: [
                 {
+                  value: "mandatory",
+                  text: "Mandatory",
+                  checked: checked(namePrefix + "['questionOptional']", "mandatory")
+                },
+                {
                   value: "questionOptional",
-                  text: "Make this question optional",
+                  text: "Optional",
                   hint: {
-                    text: "‘(optional)’ will be added to the end of the question text"
+                    text: "We’ll add ‘(optional)’ to the end of the question text."
                   },
                   checked: checked(namePrefix + "['questionOptional']", "questionOptional")
                 }
-              ]
+              ],
+              errorMessage: { text: errors['questionOptional'].text } if errors['questionOptional'].text 
             }) }}
           {% endif %}
 

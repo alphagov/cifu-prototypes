@@ -1,0 +1,82 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Select where this route ends' %}
+{% set routeType = 'Add a repeat-questions route' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageTitle }}: {{ data.formTitle or '[formTitle]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="choose-question-route" target="_parent">
+    Back to choose the type of question you want
+  </a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form id="form" class="form" method="post" novalidate>
+
+      {% if containsErrors %}
+      {{ govukErrorSummary({
+        titleText: "There is a problem",
+        errorList: errorList
+      }) }}
+      {% endif %}
+
+      <span class="govuk-caption-l">{{ routeType }}: {{ data.repeatStart or 'No question selected' }}</span>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Start question
+          </dt>
+          <dd class="govuk-summary-list__value">
+            “{{ data.repeatStart or 'No question selected' }}”
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link" href="new-repeat">
+              Change<span class="govuk-visually-hidden"> - Start question</span>
+            </a>
+          </dd>
+        </div>
+      </dl>
+
+      {% if data.pages.length > 1 %}
+      {{ govukSelect({
+        id: "endRepeat",
+        name: "endRepeat",
+        label: {
+          text: "End question",
+          classes: "govuk-label--m"
+        },
+        items: pagesList
+      }) }}
+
+      {{ govukButton({
+        text: "Save and continue"
+      }) }}
+      {% else %}
+      <h2 class="govuk-heading-m">What you need to create a route</h2>
+      <p class="govuk-body">
+        Before you can add a route you’ll need 2 or more questions.
+      </p>
+      {% endif %}
+
+      <p class="govuk-body">
+        <a class="govuk-link" href="../your-questions">Go to your questions</a>
+      </p>
+
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block pageScripts %}
+<script type="text/javascript">
+  // call function from `assets/javascripts/application.js`
+  // removeSuccessNotification();
+</script>
+{% endblock %}

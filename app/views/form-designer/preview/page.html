@@ -6,12 +6,20 @@
 {% endif %}
 
 {% set pageTitle = pageData['long-title'] or 'Question text' %}
-{% if pageData['questionOptional'] %}
+{% if pageData['questionOptional'] == 'questionOptional' %}
   {% set pageTitle = pageTitle + ' (optional)' %}
 {% endif %}
 
 
 {% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Draft preview",
+      classes: "govuk-tag--yellow"
+    },
+    html: 'You’re previewing the draft of this form'
+  }) }}
+  
   {% set prevPageId = pageId | int - 1 %}
   {% if data.cya %}
     <a class="govuk-back-link" href="check-answers">Back</a>
@@ -32,6 +40,16 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
       <form class="form" method="post" novalidate>
+
+        {% set previewHTML %}
+          <p class="govuk-notification-banner__heading">
+            This is a preview of this form. Do not enter personal information.
+          </p>
+        {% endset %}
+
+        {{ govukNotificationBanner({
+          html: previewHTML
+        }) }}
 
         {% if pageData['additional-guidance'] == 'Yes' %}
         <h1 class="govuk-heading-l">{{ pageHeading }}</h1>
@@ -408,7 +426,7 @@
                       </label>
                     </div>
                   {% endfor %}
-                  {% if pageData['listSettings'].includes('noneOption')%}
+                  {% if pageData['listSettings'].includes('noneOption') %}
                   <div class="govuk-radios__divider">or</div>
                     <div class="govuk-radios__item">
                       <input class="govuk-radios__input" id="question-{{pageId}}-none" name="{{ pageId }}" type="radio" value="none" data-behaviour="exclusive">
@@ -416,7 +434,7 @@
                         None of the above
                       </label>
                     </div>
-                  {%endif%}
+                  {% endif %}
                 </div>
               </fieldset>
             </div>
@@ -449,7 +467,7 @@
                       </label>
                     </div>
                     {% endfor %}
-                    {% if pageData['listSettings'].includes('noneOption')%}
+                    {% if pageData['listSettings'].includes('noneOption') %}
                     <div class="govuk-checkboxes__divider">or</div>
                     <div class="govuk-checkboxes__item">
                       <input class="govuk-checkboxes__input" id="question-{{pageId}}-none" name="{{ pageId }}" type="checkbox" value="none" data-behaviour="exclusive">
@@ -457,7 +475,7 @@
                         None of the above
                       </label>
                     </div>
-                    {%endif%}
+                    {% endif %}
                   {% else %}
                   <div class="govuk-checkboxes__item">
                     <input class="govuk-checkboxes__input" id="{{ pageId }}-{{ item }}" name="{{ pageId }}" type="checkbox" value="{{ item }}" {{ checked(pageId, item) }}>

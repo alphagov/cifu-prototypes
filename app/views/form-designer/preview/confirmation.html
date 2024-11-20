@@ -5,9 +5,28 @@
   {{ data['confirmationTitle'] }} - Preview - GOV.UK
 {% endblock %}
 
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Draft preview",
+      classes: "govuk-tag--yellow"
+    },
+    html: 'You’re previewing the draft of this form'
+  }) }}
+{% endblock %}
+
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
+    {% set previewHTML %}
+      <p class="govuk-notification-banner__heading">
+        This is a preview of this form. Do not enter personal information.
+      </p>
+    {% endset %}
+
+    {{ govukNotificationBanner({
+      html: previewHTML
+    }) }}
 
     {% set titleHTML %}
       {% if data.paymentLink %}

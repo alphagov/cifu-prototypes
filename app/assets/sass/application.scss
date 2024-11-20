@@ -159,13 +159,15 @@
   font-weight: 400;
 }
 
-.main--draft {
-  background-image: url(/public/images/draft-watermark.png);
-  background-repeat: repeat-y;
-  background-position: 50% 0;
-  background-size: contain;
+// .main--draft {
+//   background-image: url(/public/images/draft-watermark.png);
+//   background-repeat: repeat-y;
+//   background-position: 50% 0;
+//   background-size: contain;
+// }
+.app-header--preview-draft {
+  border-bottom-color: #fd0;
 }
-
 
 // Summary list overwrites
 .app-summary-list__key {
@@ -287,6 +289,15 @@ Summary card
 
 .app-summary-card .govuk-summary-list__row:last-child,.app-summary-card .govuk-summary-list__row:last-child>* {
   border-bottom: 0
+}
+
+// Add another check your answers
+.app-summary-list--no-border {
+  border: none;
+}
+
+.app-summary-list--no-border:last-child {
+  border-bottom: 1px solid #b1b4b6;
 }
 
 // Payment Link confirmation panel

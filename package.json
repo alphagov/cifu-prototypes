@@ -9,6 +9,7 @@
     "@govuk-prototype-kit/common-templates": "1.2.2",
     "@govuk-prototype-kit/step-by-step": "^2.1.0",
     "@lfdebrux/nunjucks-markdown": "github:lfdebrux/govuk-prototype-kit-nunjucks-markdown-plugin#v0.0.3",
+    "@x-govuk/govuk-prototype-filters": "^1.4.1",
     "govuk-frontend": "^5.2.0",
     "govuk-markdown": "^0.4.0",
     "govuk-prototype-kit": "^13.4.0",

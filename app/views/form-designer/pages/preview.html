@@ -21,7 +21,7 @@
 {% endif %}
 
 {% set pageTitle = pageData['long-title'] or 'Question text' %}
-{% if pageData['questionOptional'] %}
+{% if pageData['questionOptional'] == 'questionOptional' %}
   {% set pageTitle = pageTitle + ' (optional)' %}
 {% endif %}
 

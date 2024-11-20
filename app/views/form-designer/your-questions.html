@@ -78,19 +78,35 @@
         {% for page in data.pages -%}
 
         {% set questionTitle =  page["long-title"] or "Question " + (page["pageIndex"]|int + 1) %}
-        {% if page['questionOptional'] %}
-        {% set questionTitle = questionTitle + ' (optional)' %}
+        {% if page['questionOptional'] == 'questionOptional' %}
+          {% set questionTitle = questionTitle + ' (optional)' %}
         {% endif %}
 
         {% if questionTitle %}
+        
+        {% if data.repeatStart and (page["long-title"] in data.repeatStart) %}
+         <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key app-summary-list__key">
+            Start of repeat-questions route 1
+          </dt>
+          <dd class="govuk-summary-list__value">
+            People will be asked if they want to answer the next {{ pageCount | plural('question') }} more than once
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-padding-bottom-6">
+            <a class="govuk-link govuk-link--no-visited-state" href="question-routes/new-repeat">
+              Edit<span class="govuk-visually-hidden"> - Start of repeat-questions route</span>
+            </a>
+          </dd>
+        </div>
+        {% endif %}
 
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key app-summary-list__key">
-            {{loop.index}}
+            {{ loop.index }}
           </dt>
           <dd class="govuk-summary-list__value">
             <!--Q{{page["pageIndex"] | int + 1}}.-->
-            {{questionTitle}}
+            {{ questionTitle }}
             {#{% if page['page-name'] %}<br>Guidance added{% endif %}#}
             {#{% if page['page-name'] %}<br>Page heading: {{page['page-name']}}{% endif %}#}
           </dd>
@@ -117,10 +133,26 @@
               {% endif %}
             </div>
             <a class="govuk-link govuk-link--no-visited-state" href="pages/{{ page.pageIndex | int }}/check-question">
-              Edit<span class="govuk-visually-hidden"> Question {{loop.index}}. {{questionTitle}}</span>
+              Edit<span class="govuk-visually-hidden"> - Question {{ loop.index }}. {{ questionTitle }}</span>
             </a>
           </dd>
         </div>
+
+        {% if data.endRepeat and (page["long-title"] in data.endRepeat) %}
+         <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key app-summary-list__key">
+            Check repeat-questions route 1
+          </dt>
+          <dd class="govuk-summary-list__value">
+            People will be asked to check their answers for the previous {{ pageCount | plural('question') }}
+          </dd>
+          <dd class="govuk-summary-list__actions govuk-!-padding-bottom-6">
+            <a class="govuk-link govuk-link--no-visited-state" href="question-routes/repeat-route-end">
+              Edit<span class="govuk-visually-hidden"> - Check repeat-questions route</span>
+            </a>
+          </dd>
+        </div>
+        {% endif %}
         {% endif %}
 
         {%- endfor %}

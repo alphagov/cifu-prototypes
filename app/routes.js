@@ -13,6 +13,7 @@ const path = require('path')
 const sessionDataDefaults = require('./data/session-data-defaults.js')
 const returningSessionDataDefaults = require('./data/returning-session-data-defaults')
 const returningSessionDataDefaultsA11y = require('./data/returning-session-data-defaults-a11y')
+const quickForm = require('./data/quick-form')
 
 // Markdown support
 const markdown = require('@lfdebrux/nunjucks-markdown')
@@ -315,13 +316,75 @@ router.get('/form-designer/your-questions', function (req, res) {
   // Save the pages
   req.session.data.pages = pages
 
+  // could create a pageList for repeat routes to help with preview and questions lists
+  var repeatStart = req.session.data.repeatStart
+  var endRepeat = req.session.data.endRepeat
+  var tempPages = []
+  var pageCount = 0
+  var tempStart = 0
+  var tempEnd = 0
+  if(repeatStart && endRepeat) {
+    for (let i = 0; i < pages.length; i++) {
+      if (repeatStart.includes(pages[i]['long-title'])) {
+        tempStart = pages[i]['pageIndex']
+      }
+      if (endRepeat.includes(pages[i]['long-title'])) {
+        tempEnd = pages[i]['pageIndex']
+      }
+    }
+    for (let i = tempStart; i <= tempEnd; i++) {
+      pageCount = pageCount + 1
+      tempPages.push(pages[i])
+    }
+  }
+  req.session.data.tempPages = tempPages
+
+  // something to help us check if questions are within a repeat-route 
+  // var pageCount = 0
+  // var tempStart = 0
+  // var tempEnd = 0
+  // if (req.session.data.repeatStart) {
+  //   var repeatStart = req.session.data.repeatStart.split('. ')
+  //   var setStart = ''
+  //   if (repeatStart[1].includes('(optional)')) {
+  //     repeatStart = repeatStart[1].split(' (')
+  //     setStart = repeatStart[0]
+  //   } else {
+  //     setStart = repeatStart[1]
+  //   }
+  // }
+  // if (req.session.data.endRepeat) {
+  //   var endRepeat = req.session.data.endRepeat.split('. ')
+  //   var setEnd = ''
+  //   if (endRepeat[1].includes('(optional)')) {
+  //     endRepeat = endRepeat[1].split(' (')
+  //     setEnd = endRepeat[0]
+  //   } else {
+  //     setEnd = endRepeat[1]
+  //   }
+  // }
+  // if (setStart && setEnd) {
+  //   for (let i = 0; i < pages.length; i++) {
+  //     if (pages[i]['long-title'] == setStart) {
+  //       tempStart = pages[i]['pageIndex']
+  //     }
+  //     if (pages[i]['long-title'] == setEnd) {
+  //       tempEnd = pages[i]['pageIndex']
+  //     }
+  //   }
+  //   for (let i = tempStart; i <= tempEnd; i++) {
+  //     pageCount = pageCount + 1
+  //   }
+  // }
+
   // reset highestPageId to number of pages
   req.session.data.highestPageId = parseInt(pages.length - 1)
   
   var successMessage = req.session.data.successMessage
   req.session.data.successMessage = undefined
   return res.render('form-designer/your-questions', {
-    successMessage: successMessage
+    successMessage: successMessage,
+    pageCount: pageCount
   })
 })
 
@@ -647,8 +710,11 @@ router.post('/form-designer/preview/:pageId(\\d+)', function (req, res) {
   var pageIndex = parseInt(pageId)
   const isLastQuestionPage = pageIndex === (req.session.data.pages.length - 1)
 
-  // if last question in form OR user clicked on change link from CYA, then go to CYA
-  if(isLastQuestionPage || cya === 'true') {
+  // check if this is a repeat-questions route
+  if((req.session.data.endRepeat) && (req.session.data.endRepeat.includes(req.session.data.pages[pageIndex]['long-title']))) {
+    return res.redirect(`${pageIndex}/check-repeat-answers`)
+    // if last question in form OR user clicked on change link from CYA, then go to CYA
+  } else if(isLastQuestionPage || cya === 'true') {
     return res.redirect('check-answers')
   } else {
     return res.redirect(`${pageIndex + 1}`)
@@ -675,6 +741,78 @@ router.get('/form-designer/preview/:pageId(\\d+)', function (req, res) {
   })
 })
 
+// repeat-questions route check answers 
+router.get('/form-designer/preview/:pageId(\\d+)/check-repeat-answers', function (req, res) {
+  var pageId = req.params.pageId
+  var pageIndex = parseInt(pageId)
+  var pageData = req.session.data.pages[pageIndex]
+
+  res.render('form-designer/preview/check-repeat-answers', {
+    pageId: pageId,
+    pageIndex: pageIndex,
+    pageData: pageData
+  })
+})
+
+router.post('/form-designer/preview/:pageId(\\d+)/check-repeat-answers', function (req, res) {
+  return res.redirect('add-another')
+})
+
+// repeat-questions route add another plus playback summary cards/list
+router.get('/form-designer/preview/:pageId(\\d+)/add-another', function (req, res) {
+  var pageId = req.params.pageId
+  var pageIndex = parseInt(pageId)
+  var pageData = req.session.data.pages[pageIndex]
+  const isLastQuestionPage = pageIndex === (req.session.data.pages.length - 1)
+
+  res.render('form-designer/preview/add-another', {
+    pageId: pageId,
+    pageIndex: pageIndex,
+    pageData: pageData,
+    isLastQuestionPage
+  })
+})
+
+router.post('/form-designer/preview/:pageId(\\d+)/add-another', function (req, res) {
+  var cya = req.session.data.cya
+  var pageId = req.params.pageId
+  var pageIndex = parseInt(pageId)
+  var pageData = req.session.data.pages[pageIndex]
+  const isLastQuestionPage = pageIndex === (req.session.data.pages.length - 1)
+
+  // if last question in form OR user clicked on change link from CYA, then go to CYA
+  if(isLastQuestionPage || cya === 'true') {
+    // get the previous page URL
+    // var previousPage = req.session.data.referer
+    return res.redirect('../check-answers')
+  } else {
+    return res.redirect(`../${pageIndex + 1}`)
+  }
+})
+
+router.post('/form-designer/preview/add-another', function (req, res) {
+  // this will only be triggered if the user tries to change answer from the check your answers before submitting page
+  return res.redirect('check-answers')
+})
+
+router.get('/form-designer/preview/:pageId(\\d+)/remove-answer', function (req, res) {
+  var pageId = req.params.pageId
+  var pageIndex = parseInt(pageId)
+  var pageData = req.session.data.pages[pageIndex]
+  const isLastQuestionPage = pageIndex === (req.session.data.pages.length - 1)
+
+  res.render('form-designer/preview/remove-answer', {
+    pageId: pageId,
+    pageIndex: pageIndex,
+    pageData: pageData,
+    isLastQuestionPage
+  })
+})
+
+router.post('/form-designer/preview/:pageId(\\d+)/remove-answer', function (req, res) {
+  var removeAnswer = req.session.data.removeAnswer
+  return res.redirect('add-another')
+})
 
 /* =====
 Routing for setting an email steps
@@ -1004,6 +1142,13 @@ router.get('/form-designer/returning', (req, res) => {
 // Uses return data for IS example "Amendment form: redundancy claim for holiday pay" form
 router.get('/form-designer/returning-again', (req, res) => {
   req.session.data = returningSessionDataDefaults
+  res.redirect('/form-designer/your-forms')
+})
+
+
+// Uses return data for a quick simple form for testing/designing
+router.get('/form-designer/quick-form', (req, res) => {
+  req.session.data = quickForm
   res.redirect('/form-designer/your-forms')
 })
 

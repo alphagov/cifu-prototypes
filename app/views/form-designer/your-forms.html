@@ -19,10 +19,13 @@
 
       {% if data['formTitle'] %}
       <table class="govuk-table">
-        <caption class="govuk-table__caption govuk-table__caption--m">[departmentName] forms</caption>
+        <caption class="govuk-table__caption govuk-table__caption--m">
+          Forms in ‘[groupName]’
+        </caption>
         <thead class="govuk-table__head">
           <tr class="govuk-table__row">
             <th scope="col" class="govuk-table__header">Form name</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Created by</th>
             <th scope="col" class="govuk-table__header govuk-table__header--numeric">Status</th>
           </tr>
         </thead>
@@ -31,6 +34,9 @@
             <th scope="row" class="govuk-table__cell">
               <a class="govuk-link govuk-!-font-weight-regular" href="your-form">{{data['formTitle']}}</a>
             </th>
+            <td class="govuk-table__cell">
+              Test User
+            </td>
             <td class="govuk-table__cell govuk-table__cell--numeric">
             {% if data['status'] %}
               {{govukTag({

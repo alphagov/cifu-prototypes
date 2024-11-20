@@ -114,25 +114,25 @@
             Answer type
           </dt>
           <dd class="govuk-summary-list__value">
-            {{answerType}}
+            {{ answerType }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit-answer-type">
-              Change <span class="govuk-visually-hidden">answer type {{answerType}}<span>
+              Change <span class="govuk-visually-hidden"> - Answer type {{ answerType }}<span>
             </a>
           </dd>
         </div>
         {% if pageData['input'] and (pageData['input'] !== '') %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            {{inputTypeTitle}}
+            {{ inputTypeTitle }}
           </dt>
           <dd class="govuk-summary-list__value">
-            {{inputType}}
+            {{ inputType }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit-settings#input">
-              Change <span class="govuk-visually-hidden">{{inputTypeTitle}} {{inputType}}<span>
+              Change <span class="govuk-visually-hidden"> - {{ inputTypeTitle }}<span>
             </a>
           </dd>
         </div>
@@ -143,11 +143,11 @@
             Title needed
           </dt>
           <dd class="govuk-summary-list__value">
-            {{pageData['title']|capitalize}}
+            {{ pageData['title'] | capitalize }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit-settings#title">
-              Change <span class="govuk-visually-hidden">title needed {{pageData['title']|capitalize}}<span>
+              Change <span class="govuk-visually-hidden"> - Title needed<span>
             </a>
           </dd>
         </div>
@@ -166,7 +166,7 @@
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit-settings#option-0">
-              Change <span class="govuk-visually-hidden">options<span>
+              Change <span class="govuk-visually-hidden"> - Options<span>
             </a>
           </dd>
         </div>
@@ -175,24 +175,24 @@
             Only select one option
           </dt>
           <dd class="govuk-summary-list__value">
-            {{'Yes' if pageData['listSettings'] and pageData['listSettings'].includes('oneOption') else 'No'}}
+            {{ 'Yes' if pageData['listSettings'] and pageData['listSettings'].includes('oneOption') else 'No' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit-settings#oneOption">
-              Change <span class="govuk-visually-hidden">only select one option<span>
+              Change <span class="govuk-visually-hidden"> - Only select one option<span>
             </a>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Include 'none of the above' option
+            Include ‘none of the above’ option
           </dt>
           <dd class="govuk-summary-list__value">
-            {{'Yes' if pageData['listSettings'] and pageData['listSettings'].includes('noneOption') else 'No'}}
+            {{ 'Yes' if pageData['listSettings'] and pageData['listSettings'].includes('noneOption') else 'No' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit-settings#noneOption">
-              Change <span class="govuk-visually-hidden">include 'none of the above' option<span>
+              Change <span class="govuk-visually-hidden"> - Include ‘none of the above’ option<span>
             </a>
           </dd>
         </div>
@@ -211,7 +211,7 @@
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit#long-title">
-              Change <span class="govuk-visually-hidden">Question {{ pageData['long-title'] or 'Question text' }}<span>
+              Change <span class="govuk-visually-hidden"> - Question text<span>
             </a>
           </dd>
         </div>
@@ -220,11 +220,11 @@
             Hint text (optional)
           </dt>
           <dd class="govuk-summary-list__value">
-            {{pageData['hint-text'] or 'None added' }}
+            {{ pageData['hint-text'] or 'None added' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit#hint-text">
-              Change <span class="govuk-visually-hidden">Hint text {{pageData['hint-text']}}<span>
+              Change <span class="govuk-visually-hidden"> - Hint text<span>
             </a>
           </dd>
         </div>
@@ -233,24 +233,24 @@
             Add guidance
           </dt>
           <dd class="govuk-summary-list__value">
-            {{pageData['additional-guidance'] or 'No'}}
+            {{ pageData['additional-guidance'] or 'No' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit#additional-guidance">
-              Change <span class="govuk-visually-hidden">Add guidance {{pageData['additional-guidance']}}<span>
+              Change <span class="govuk-visually-hidden"> - Add guidance<span>
             </a>
           </dd>
         </div>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Make this question optional
+            Make this mandatory or optional
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ 'Yes' if (pageData['questionOptional'] and 'questionOptional' in pageData['questionOptional']) else 'No' }}
+            {{ 'Optional' if ((pageData['questionOptional']) and ('questionOptional' in pageData['questionOptional'])) else 'Mandatory' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit">
-              Change <span class="govuk-visually-hidden">if question optional<span>
+              Change <span class="govuk-visually-hidden"> - Make this mandatory or optional<span>
             </a>
           </dd>
         </div>
@@ -265,11 +265,11 @@
             Page heading
           </dt>
           <dd class="govuk-summary-list__value">
-            {{pageData['page-name']}}
+            {{ pageData['page-name'] }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="additional-guidance">
-              Change <span class="govuk-visually-hidden">Page heading {{pageData['page-name']}}<span>
+              Change <span class="govuk-visually-hidden"> - Page heading<span>
             </a>
           </dd>
         </div>
@@ -282,7 +282,7 @@
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="additional-guidance">
-              Change <span class="govuk-visually-hidden">Guidance text {{pageData['additional-guidance-text']}}<span>
+              Change <span class="govuk-visually-hidden"> - Guidance text<span>
             </a>
           </dd>
         </div>
@@ -298,13 +298,13 @@
           name: "action",
           value: "update"
         }) }}
-        {# Grey CTA - Save and preview question #}
+        {# Grey CTA - Save and preview question
         {{ govukButton({
           classes: "govuk-button--secondary",
           text:  "Save and preview",
           name: "action",
           value: "savePreview"
-        }) }}
+        }) }} #}
       </div>
 
       {% if editingExistingQuestion === 'Yes' %}

@@ -1,6 +1,6 @@
 {% extends "layout-govuk-forms.html" %}
 
-{% set pageTitle = 'Add a skip-questions route' %}
+{% set pageTitle = 'Add a repeat-questions route' %}
 
 {% block pageTitle %}
   {{ "Error: " if containsErrors }}{{pageTitle}}: {{ data.formTitle or '[formTitle]' }} - GOV.UK Forms
@@ -15,7 +15,7 @@
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
-    <form id="form" class="form" action="route-start" method="post" novalidate>
+    <form id="form" class="form" method="post" novalidate>
 
       {% if containsErrors %}
       {{ govukErrorSummary({
@@ -28,20 +28,40 @@
       <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
 
       <p class="govuk-body">
-        You can send people directly to the question or page you want, based on their previous answer. This means they’ll only see questions that are relevant to them.
+        This lets you group a number of questions together so people can answer these more than once, if needed.
       </p>
 
+      <p class="govuk-body">
+        You’ll select the questions that should start and end the repeating route.
+      </p>
+
+      {% if data.pages.length > 1 %}
+
+      {{ govukRadios({
+        name: "repeatStart",
+        fieldset: {
+          legend: {
+            text: "Which question do you want your route to start from?",
+            isPageHeading: false,
+            classes: "govuk-fieldset__legend--m"
+          }
+        },
+        hint: {
+          text: 'You can only add one route from each question'
+        },
+        items: pagesList,
+        errorMessage: { text: errors['repeatStart'].text } if errors['repeatStart'].text 
+      }) }}
+
+      {{ govukButton({
+        text: "Continue"
+      }) }}
+      {% else %}
       <h2 class="govuk-heading-m">What you need to create a route</h2>
       <p class="govuk-body">
-        Before you can add a route you’ll need:
+        Before you can add a route you’ll need 2 or more questions.
       </p>
-      <ul class="govuk-list govuk-list--bullet">
-        <li>2 or more questions</li>
-        <li>at least one question where people must select a single item from a list of options</li>
-      </ul>
-      <p class="govuk-body">
-        You can only add one route from each question.
-      </p>
+      {% endif %}
 
       <p class="govuk-body">
         <a class="govuk-link" href="../your-questions">Go to your questions</a>

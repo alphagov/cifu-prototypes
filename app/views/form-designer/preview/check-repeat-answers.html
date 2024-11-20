@@ -1,0 +1,106 @@
+{% extends "layout-govuk-form-preview.html" %}
+{% set mainClasses = "main--draft govuk-main-wrapper--auto-spacing" %}
+
+{% set pageTitle = 'Check your answers' %}
+
+{% block pageTitle %}
+  {{ pageTitle }} - Preview - GOV.UK
+{% endblock %}
+
+{% block beforeContent %}
+  {{ govukPhaseBanner({
+    tag: {
+      text: "Draft preview",
+      classes: "govuk-tag--yellow"
+    },
+    html: 'You’re previewing the draft of this form'
+  }) }}
+  <a class="govuk-back-link" href="../{{ data['pages'] | length - 1 }}">Back</a>
+{% endblock %}
+
+{% block content %}
+<div class="govuk-grid-row">
+  <div class="govuk-grid-column-two-thirds">
+    <form class="form" method="post" novalidate>
+
+      {% set previewHTML %}
+        <p class="govuk-notification-banner__heading">
+          This is a preview of this form. Do not enter personal information.
+        </p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: previewHTML
+      }) }}
+
+      <h1 class="govuk-heading-l">
+        {{ pageTitle }}<span class="govuk-visually-hidden"> - Preview</span>
+      </h1>
+
+      <dl class="govuk-summary-list">
+        {% if data.tempPages %}
+          {% for page in data.tempPages -%}
+
+            {% set questionTitle = page["long-title"] or "Page " + page["pageIndex"] %}
+            {% if page['questionOptional'] == 'questionOptional' %}
+            {% set questionTitle = questionTitle + ' (optional)' %}
+            {% endif %}
+
+            {% set index = page['pageIndex'] %}
+
+            {% if questionTitle %}
+
+              <div class="govuk-summary-list__row">
+                <dt class="govuk-summary-list__key">
+                  <!--Q{{page["pageIndex"] | int + 1}}.--> {{ questionTitle }}
+                </dt>
+                <dd class="govuk-summary-list__value">
+                  {% if (data[index]) or (data[index + '-year']) or (data[index + '-address-street-address']) or (data[index + '-address-line-1']) or (data[index + '-address-postcode']) or (data[index + '-full-name']) or (data[index + '-first-name']) %}
+                    {% if page['type'] == 'personName' %}
+                      {% if (page['title'] === 'yes') and (data[index + '-name-title']) %}{{data[index + '-name-title']}}{% endif %}
+                      {% if page['input'] === 'single-field' %}
+                        {{data[index + '-full-name']}}
+                      {% else %}
+                        {{data[index + '-first-name']}}
+                        {% if data[index + '-middle-names'] %}{{data[index + '-middle-names']}}{% endif %}
+                        {{data[index + '-last-name']}}
+                      {% endif %}
+                    {% elif page['type'] == 'date' -%}
+                      {% if (data[index + '-day']) %}{{data[index + '-day']}}/{% endif %}{% if (data[index + '-month']) %}{{data[index + '-month']}}{% if (data[index + '-year']) %}/{% endif %}{% endif %}{% if (data[index + '-year']) %}{{data[index + '-year']}}{% endif %}
+                    {%- elif page['type'] == 'address' %}
+                      {% if ('uk-address' in page['input']) and not ('international-address' in page['input']) %}
+                        {{data[index + '-address-line-1']}}<br>
+                        {% if data[index + '-address-line-2'] %}{{data[index + '-address-line-2']}}<br>{% endif %}
+                        {{data[index + '-address-town']}}<br>
+                        {{data[index + '-address-postcode']}}
+                      {% else %}
+                        {{data[index + '-address-street-address'] | replace(",","") | replace(".","") | nl2br | safe}}<br>
+                        {% if data[index + '-address-country-name'] %}{{data[index + '-address-country-name']}}{% endif %}
+                      {% endif %}
+                    {% elif page['type'] == 'select' and not page['listSettings'].includes('oneOption') %}
+                      {{data[index]|join(", ") if data[index]}}
+                    {% else %}
+                      {{data[index]}}
+                    {% endif %}
+                  {% else %}
+                    Not completed
+                  {% endif %}
+                </dd>
+                  <dd class="govuk-summary-list__actions">
+                      <a class="govuk-link govuk-link--no-visited-state" href="{{index}}?cya=true">
+                        Change <span class="govuk-visually-hidden">{{questionTitle}}<span>
+                      </a>
+                  </dd>
+              </div>
+            {% endif %}
+          {%- endfor %}
+        {% endif %}
+      </dl>
+
+      {{ govukButton({
+        text: 'Continue'
+      }) }}
+    </form>
+  </div>
+</div>
+{% endblock %}
