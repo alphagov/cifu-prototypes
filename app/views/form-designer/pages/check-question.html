@@ -53,19 +53,6 @@
   {{ pageTitle }} - GOV.UK Forms
 {% endblock %}
 
-{# Overwrite back link if last action was to save #}
-{% if successMessage %}
-{% set previousPageText = 'Back to your questions' %}
-{% set previousPageLink = '/form-designer/clear-empty' %}
-{% endif %}
-
-{% block beforeContent %}
-  {# Back links are handled in routes.js #}
-  <a class="govuk-back-link" href="{{ previousPageLink }}" target="_parent">
-    {{ previousPageText }}
-  </a>
-{% endblock %}
-
 {% block content %}
 <div class="govuk-grid-row">
   <div class="govuk-grid-column-two-thirds">
@@ -84,7 +71,7 @@
         </h3>
         <ul class="govuk-list">
           <li>
-            <a {% if 'new' in nextActionURL %}role="button" draggable="false" class="govuk-button govuk-!-margin-bottom-3" data-module="govuk-button"{% else %}class="govuk-link govuk-link--no-visited-state"{% endif %} href="{{ nextActionURL }}">
+            <a {% if ('new' in nextActionURL) or ('group-or-question' in nextActionURL) %}role="button" draggable="false" class="govuk-button govuk-!-margin-bottom-3" data-module="govuk-button"{% else %}class="govuk-link govuk-link--no-visited-state"{% endif %} href="{{ nextActionURL }}">
               {{ nextActionText }}
             </a>
           </li>
@@ -103,8 +90,10 @@
         }) }}
       {% endif %}
 
-      <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
-      <h1 class="govuk-heading-l">{{pageTitle}}</h1>
+      <span class="govuk-caption-l">
+        Question {{ pageId | int + 1 }} {% if (data.addJourney == 'addAnother1') and (pageData['addToGroup'] != null) -%} - Part of {{ groupData.groupName or '[setName]' }}{%- endif %}
+      </span>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
 
       <!-- Answer settings -->
       <h2 class="govuk-heading-m">Answer settings</h2>
@@ -241,19 +230,67 @@
             </a>
           </dd>
         </div>
+        {% if (pageData['type'] != 'select') and ((data.groupQuestions != 'newQuestionRepeats') or (pageData.repeatQuestion != 'Yes')) %}
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key">
-            Make this question optional
+            Make this mandatory or optional
           </dt>
           <dd class="govuk-summary-list__value">
-            {{ 'Yes' if (pageData['questionOptional'] and 'questionOptional' in pageData['questionOptional']) else 'No' }}
+            {{ 'Optional' if ((pageData['questionOptional']) and ('questionOptional' in pageData['questionOptional'])) else 'Mandatory' }}
           </dd>
           <dd class="govuk-summary-list__actions">
             <a class="govuk-link govuk-link--no-visited-state" href="edit">
-              Change <span class="govuk-visually-hidden">if question optional<span>
+              Change <span class="govuk-visually-hidden"> Make this question optional<span>
             </a>
           </dd>
         </div>
+        {% endif %}
+        {% if data.addJourney == 'addAnother2' %}
+          <div class="govuk-summary-list__row">
+            <dt class="govuk-summary-list__key">
+              Can be answered multiple times
+            </dt>
+            <dd class="govuk-summary-list__value">
+              {{ pageData['repeatQuestion'] }}
+            </dd>
+            <dd class="govuk-summary-list__actions">
+              <a class="govuk-link govuk-link--no-visited-state" href="edit#repeatQuestion">
+                Change <span class="govuk-visually-hidden"> Can be answered multiple times<span>
+              </a>
+            </dd>
+          </div>
+          {% if pageData['repeatQuestion'] == 'Yes' %}
+            <div class="govuk-summary-list__row">
+              <dt class="govuk-summary-list__key">
+                Add to a set of questions
+              </dt>
+              <dd class="govuk-summary-list__value">
+                {{ pageData['addToSet'] }}
+              </dd>
+              <dd class="govuk-summary-list__actions">
+                <a class="govuk-link govuk-link--no-visited-state" href="add-to-set#addToSet">
+                  Change <span class="govuk-visually-hidden"> Add to a set of questions<span>
+                </a>
+              </dd>
+            </div>
+          {% endif %}
+        {% endif %}
+        {% if (pageData['repeatQuestion'] == 'Yes') and (pageData['addToGroup'] == null) %}
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Number of times question can be answered
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Min: {{ pageData['minLoop'] }}<br>
+            Max: {{ pageData['maxLoop'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            <a class="govuk-link govuk-link--no-visited-state" href="edit#minimum-loop">
+              Change <span class="govuk-visually-hidden"> number of times question can be answered<span>
+            </a>
+          </dd>
+        </div>
+        {% endif %}
       </dl>
 
       {% if pageData['additional-guidance'] == 'Yes' %}
@@ -289,6 +326,51 @@
       </dl>
       {% endif %}
 
+      {% if (pageData['addToSet'] == 'Yes') or (pageData['addToGroup'] != null) -%}
+      {% for group in data.groups -%}
+      {% if group.groupIndex == pageData.addToGroup -%}
+      <h2 class="govuk-heading-m">Part of a question set</h2>
+      <dl class="govuk-summary-list">
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Question set name
+          </dt>
+          <dd class="govuk-summary-list__value">
+            {{ group.groupName }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            {% if (data.addJourney == 'addAnother2') and (data.referrer != 'choose-group') %}
+            <a class="govuk-link govuk-link--no-visited-state" href="edit-group#group-name">
+              Change <span class="govuk-visually-hidden"> question set name<span>
+            </a>
+            {% else %}
+            <a class="govuk-link govuk-link--no-visited-state" href="choose-group">
+              Change <span class="govuk-visually-hidden"> question set<span>
+            </a>
+            {% endif %}
+          </dd>
+        </div>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key">
+            Number of times this set can be answered
+          </dt>
+          <dd class="govuk-summary-list__value">
+            Min: {{ group['minLoop'] }}<br>
+            Max: {{ group['maxLoop'] }}
+          </dd>
+          <dd class="govuk-summary-list__actions">
+            {% if (data.addJourney == 'addAnother2') and (data.referrer != 'choose-group') %}
+            <a class="govuk-link govuk-link--no-visited-state" href="edit-group#minimum-loop">
+              Change <span class="govuk-visually-hidden"> number of times this set can be answered<span>
+            </a>
+            {% endif %}
+          </dd>
+        </div>
+      </dl>
+      {%- endif %}
+      {%- endfor %}
+      {%- endif %}
+
       <input type="hidden" id="questionSaved" name="questionSaved" value="Yes" />
 
       <div class="govuk-button-group">
@@ -305,6 +387,17 @@
           name: "action",
           value: "savePreview"
         }) }}
+
+        {% if editingExistingQuestion === 'Yes' -%}
+          {% if (data.addJourney == 'addAnother1') and (pageData['addToGroup'] != null) -%}
+            {{ govukButton({
+              classes: "govuk-button--secondary",
+              text:  "Finish question set",
+              name: "action",
+              value: "completeSet"
+            }) }}
+          {%- endif %}
+        {%- endif %}
       </div>
 
       {% if editingExistingQuestion === 'Yes' %}
@@ -322,14 +415,11 @@
       </p>
       {% endif %}
 
-      {# If we are not sure what the back link is going to don’t show the bottom link #}
-      {% if previousPageText !== 'Back' %}
       <p class="govuk-body">
-        <a class="govuk-link" href="{{ previousPageLink }}" target="_parent">
-          {{ previousPageText }}
+        <a class="govuk-link" href="/form-designer/clear-empty" target="_parent">
+          Back to your questions
         </a>
       </p>
-      {% endif %}
 
     </form>
   </div>

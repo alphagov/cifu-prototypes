@@ -1,9 +1,16 @@
 {% extends "layout-govuk-forms.html" %}
 
-{% set pageTitle = 'Are you sure you want to delete this question?' %}
+{% set pageName = 'Are you sure you want to delete this group?' %}
 
 {% block pageTitle %}
-  {{ "Error: " if containsErrors }}{{pageTitle}} - GOV.UK Forms
+  {{ "Error: " if containsErrors }}{{ pageName }} - {{ data.groupName or '[groupName]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:history.go(-1)" target="_parent">
+    Back
+  </a>
 {% endblock %}
 
 {% block content %}
@@ -17,12 +24,13 @@
           errorList: errorList
         }) }}
         {% endif %}
-
+        
+        <span class="govuk-caption-l">{{ data.groupName or '[groupName]' }}</span>
         {{ govukRadios({
-          name: "delete",
+          name: "deleteGroup",
           fieldset: {
             legend: {
-              text: pageTitle,
+              text: pageName,
               isPageHeading: true,
               classes: "govuk-fieldset__legend--l"
             }
@@ -36,11 +44,8 @@
               value: "No",
               text: "No"
             }
-          ],
-          errorMessage: { text: errors['delete'].text } if errors['delete'].text
+          ]
         }) }}
-
-        <input type="hidden" name="action" value="delete">
 
         {{ govukButton({
           text: "Save and continue"
@@ -48,6 +53,4 @@
       </form>
     </div>
   </div>
-
-
 {% endblock %}

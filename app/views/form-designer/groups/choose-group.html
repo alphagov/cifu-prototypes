@@ -1,0 +1,66 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageName = 'Choose which question set to add this question to' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageName }} - {{ data.formTitle or '[formTitle]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:history.go(-1)" target="_parent">
+    Back
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form" class="form" method="post" novalidate>
+
+        {% if containsErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorList
+        }) }}
+        {% endif %}
+
+        {% set namePrefix = "pages[" + pageIndex + "]" %}
+        
+        <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
+        <div class="govuk-form-group">
+          <fieldset class="govuk-fieldset">
+            <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+              <h1 class="govuk-fieldset__heading">
+                {{ pageName }}
+              </h1>
+            </legend>
+            <div class="govuk-radios" data-module="govuk-radios">
+              {% for group in data.groups %}
+                <div class="govuk-radios__item">
+                  <input class="govuk-radios__input" id="addToGroup-{{ loop.index }}" name="addToGroup" type="radio" value="{{ group.groupIndex }}">
+                  <label class="govuk-label govuk-radios__label" for="addToGroup-{{ loop.index }}">
+                    {{ loop.index }}. {{ group.groupName }}
+                  </label>
+                </div>
+              {% endfor %}
+            </div>
+          </fieldset>
+        </div>
+
+        <div>
+        {{ govukButton({
+          text: "Create new question set",
+          classes: "govuk-button--secondary",
+          name: "action",
+          value: "addNewGroup"
+        }) }}
+        </div>
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

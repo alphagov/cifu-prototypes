@@ -21,7 +21,7 @@
     {% for page in data.pages -%}
 
       {% set questionTitle = page["long-title"] or "Page " + page["pageIndex"] %}
-      {% if page['questionOptional'] %}
+      {% if page['questionOptional'] == 'questionOptional' %}
       {% set questionTitle = questionTitle + ' (optional)' %}
       {% endif %}
 
@@ -63,11 +63,11 @@
             Not completed
           {% endif %}
         </dd>
-          <dd class="govuk-summary-list__actions">
-              <a class="govuk-link govuk-link--no-visited-state" href="{{loop.index0}}?cya=true">
-                Change <span class="govuk-visually-hidden">{{questionTitle}}<span>
-              </a>
-          </dd>
+        <dd class="govuk-summary-list__actions">
+            <a class="govuk-link govuk-link--no-visited-state" href="{{loop.index0}}?cya=true">
+              Change <span class="govuk-visually-hidden">{{questionTitle}}<span>
+            </a>
+        </dd>
       </div>
       {% endif %}
 

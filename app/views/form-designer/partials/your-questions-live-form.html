@@ -1,7 +1,7 @@
 {% for page in data.pages %}
 <div class="govuk-summary-card app-summary-card">
   <div class="govuk-summary-card__title-wrapper">
-    <h2 class="govuk-summary-card__title">{{ page['long-title'] }}{{ ' (optional)' if page.questionOptional }}</h2>
+    <h2 class="govuk-summary-card__title">{{ page['long-title'] }}{{ ' (optional)' if page.questionOptional == 'questionOptional' }}</h2>
   </div>
   <div class="govuk-summary-card__content">
     <dl class="govuk-summary-list">

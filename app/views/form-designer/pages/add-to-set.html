@@ -1,0 +1,62 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageName = 'Do you want to add this question to a set of questions about the same thing?' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageName }} - {{ data.formTitle or '[formTitle]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:history.go(-1)" target="_parent">
+    Back
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form" class="form" method="post" novalidate>
+
+        {% if containsErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorList
+        }) }}
+        {% endif %}
+
+        {% set namePrefix = "pages[" + pageIndex + "]" %}
+        
+        <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
+        {{ govukRadios({
+          name: "addToSet",
+          fieldset: {
+            legend: {
+              text: pageName,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          items: [
+            {
+              value: "Yes",
+              text: "Yes",
+              checked: checked(namePrefix + "['addToSet']", "Yes")
+            },
+            {
+              value: "No",
+              text: "No",
+              checked: checked(namePrefix + "['addToSet']", "No")
+            }
+          ],
+          errorMessage: { text: errors['addToSet'].text } if errors['addToSet'].text
+        }) }}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+        
+      </form>
+    </div>
+  </div>
+{% endblock %}

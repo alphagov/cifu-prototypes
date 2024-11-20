@@ -67,15 +67,22 @@
           {% endif %}
         </div>
 
-        {% if (pagesOrder.length or data.pagesOrder.length) and data.pages.length > 0 %}
+        {% if data.pages.length %}
 
           <h2 class="govuk-heading-m govuk-!-margin-top-7 govuk-!-margin-bottom-0" id="question-list">
             Your questions
           </h2>
           <dl class="govuk-summary-list govuk-!-margin-bottom-9" aria-describedby="question-list">
+            {% set pageLoopCount = 0 %}
+            {% set groupLoopCount = 0 %}
             {% for object in pagesOrder -%}
 
               {% if object.group -%}
+
+                <!-- Add a count for groups to use instead of loop.index -->
+                {% set groupLoopCount = groupLoopCount + 1 %}
+
+                {# if this is a question set show #}
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key app-summary-list__key">
                     Question set {{ object.group.groupIndex | int + 1 }}
@@ -91,71 +98,67 @@
                     {%- endfor %} 
                   </dd>
                   <dd class="govuk-summary-list__actions govuk-!-padding-bottom-6">
-                    {% if data.pagesOrder.length > 1 %}
-                      <div class="govuk-button-group form-action-group app-page-list__button-group">
-                        <div class="form-actions-reordering">
-                          {% if object.index > 0 %}
-                            {{ govukButton({
-                              html: "Move up <span class='govuk-visually-hidden'> Group " + object.index + ". " + object.group.groupName + "</span>",
-                              classes: "govuk-button--secondary",
-                              href: "pages/" + ( object.index ) + "/reorder/up"
-                            }) }}
-                          {% endif %}
-
-                          {% if object.index < data.pagesOrder | length - 1 %}
-                            {{ govukButton({
-                              html: "Move down <span class='govuk-visually-hidden'> Group " + object.index + ". " + object.group.groupName + "</span>",
-                              classes: "govuk-button--secondary",
-                              href: "pages/" + ( object.index ) + "/reorder/down"
-                            }) }}
-                          {% endif %}
-                        </div>
+                    <div class="govuk-button-group form-action-group app-page-list__button-group">
+                      <div class="form-actions-reordering">
+                        {{ govukButton({
+                          html: "Move up <span class='govuk-visually-hidden'> Group " + loop.index + ". " + object.group.groupName + "</span>",
+                          classes: "govuk-button--secondary",
+                          href: "pages/" + ( loop.index ) + "/reorder/up"
+                        }) }}
+                        {{ govukButton({
+                          html: "Move down <span class='govuk-visually-hidden'> Group " + loop.index + ". " + object.group.groupName + "</span>",
+                          classes: "govuk-button--secondary",
+                          href: "pages/" + ( loop.index ) + "/reorder/down"
+                        }) }}
                       </div>
-                    {% endif %}
+                    </div>
                     <a class="govuk-link govuk-link--no-visited-state" href="groups/{{ object.group.groupIndex | int }}/check-group">
-                      Edit<span class="govuk-visually-hidden"> question set {{ object.index }}</span>
+                      Edit<span class="govuk-visually-hidden"> question set {{ loop.index }}</span>
                     </a>
                   </dd>
                 </div>
 
               {% else %}
 
-                {% set questionTitle =  object.page["long-title"] or "Question " + ( object.index | int + 1 ) %}
-                {% if object.page['questionOptional'] == 'questionOptional' -%}
-                  {% set questionTitle = questionTitle + ' (optional)' %}
-                {%- endif %}
+                <!-- Add a count for pages to use instead of loop.index -->
+                {% set pageLoopCount = pageLoopCount + 1 %}
+
+                {% set questionTitle =  object.page["long-title"] or "Question " + (object.page["pageIndex"]|int + 1) %}
+                {% if object.page['questionOptional'] == 'questionOptional' %}
+                {% set questionTitle = questionTitle + ' (optional)' %}
+                {% endif %}
 
                 <div class="govuk-summary-list__row">
                   <dt class="govuk-summary-list__key app-summary-list__key">
-                    {{ object.index | int + 1 }}
+                    {{ pageLoopCount }}
                   </dt>
                   <dd class="govuk-summary-list__value">
                     {{ questionTitle }}
                   </dd>
                   <dd class="govuk-summary-list__actions govuk-!-padding-bottom-6">
-                    {% if data.pagesOrder.length > 1 %}
-                      <div class="govuk-button-group form-action-group app-page-list__button-group">
+                    <div class="govuk-button-group form-action-group app-page-list__button-group">
+                      {% if data.pages.length > 1 %}
                         <div class="form-actions-reordering">
-                          {% if object.index > 0 %}
+                          {% if object.page.pageIndex > 0 %}
                             {{ govukButton({
-                              html: "Move up <span class='govuk-visually-hidden'> Question " + object.index + ". " + questionTitle + "</span>",
+                              html: "Move up <span class='govuk-visually-hidden'> Question " + loop.index + ". " + questionTitle + "</span>",
                               classes: "govuk-button--secondary",
-                              href: "pages/" + ( object.index ) + "/reorder/up"
+                              href: "pages/" + ( loop.index ) + "/reorder/up"
                             }) }}
                           {% endif %}
 
-                          {% if object.index < data.pagesOrder | length - 1 %}
+                          {% if object.page.pageIndex < data.pages | length - 1 %}
                             {{ govukButton({
-                              html: "Move down <span class='govuk-visually-hidden'> Question " + object.index + ". " + questionTitle + "</span>",
+                              html: "Move down <span class='govuk-visually-hidden'> Question " + loop.index + ". " + questionTitle + "</span>",
                               classes: "govuk-button--secondary",
-                              href: "pages/" + ( object.index ) + "/reorder/down"
+                              href: "pages/" + ( loop.index ) + "/reorder/down"
                             }) }}
                           {% endif %}
                         </div>
-                      </div>
-                    {% endif %}
+                      {% endif %}
+                    </div>
                     <a class="govuk-link govuk-link--no-visited-state" href="pages/{{ object.page.pageIndex | int }}/check-question">
-                      Edit<span class="govuk-visually-hidden"> Question {{ object.index }}. {{questionTitle}}</span>
+                      Edit<span class="govuk-visually-hidden"> Question {{loop.index}}. {{questionTitle}}</span>
                     </a>
                   </dd>
                 </div>

@@ -19,6 +19,13 @@
   }) }}
 {% endblock %}
 
+{% block beforeContent %}
+  {# TO-DO: Back links sould be handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:window.history.back()" target="_parent">
+    Back
+  </a>
+{% endblock %}
+
 {% if (GOVUKPrototypeKit.isDevelopment) %}
   {% set formsFooterItems = [
     {

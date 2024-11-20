@@ -57,13 +57,6 @@
   {{ "Error: " if containsErrors }}{{ pageTitle }} - GOV.UK Forms
 {% endblock %}
 
-{% block beforeContent %}
-  {# Back links are handled in routes.js #}
-  <a class="govuk-back-link" href="{{ previousPageLink }}" target="_parent">
-    {{ previousPageText }}
-  </a>
-{% endblock %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -77,7 +70,9 @@
             }) }}
           {% endif %}
 
-          <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
+          <span class="govuk-caption-l">
+            Question {{ pageId | int + 1 }} {% if (data.addJourney == 'addAnother1') and (pageData['addToGroup'] != null) -%} - Part of {{ groupData.groupName or '[setName]' }}{%- endif %}
+          </span>
           <h1 class="govuk-heading-l">{{pageTitle}}</h1>
 
           {% set namePrefix = "pages[" + pageIndex + "]" %}
@@ -144,31 +139,99 @@
           }) }}
 
           <!-- Question settings -->
-          {% if pageData['type'] != 'select' %}
+          {% if (pageData['type'] != 'select') and ((data.groupQuestions != 'newQuestionRepeats') or (pageData.repeatQuestion != 'Yes')) %}
             <hr class="govuk-section-break govuk-section-break--m govuk-section-break--visible">
 
-            {{ govukCheckboxes({
+            {{ govukRadios({
               idPrefix: "questionOptional",
               name: "questionOptional",
               fieldset: {
                 legend: {
-                  text: "Make this question optional",
+                  text: "Should this question be mandatory or optional?",
                   classes: "govuk-fieldset__legend--m"
                 }
               },
-              hint: {
-                text: "All questions are mandatory unless you make them optional."
-              },
               items: [
                 {
+                  value: "mandatory",
+                  text: "Mandatory",
+                  checked: checked(namePrefix + "['questionOptional']", "mandatory")
+                },
+                {
                   value: "questionOptional",
-                  text: "Make this question optional",
+                  text: "Optional",
                   hint: {
-                    text: "‘(optional)’ will be added to the end of the question text"
+                    text: "We’ll add ‘(optional)’ to the end of the question text."
                   },
                   checked: checked(namePrefix + "['questionOptional']", "questionOptional")
                 }
-              ]
+              ],
+              errorMessage: { text: errors['questionOptional'].text } if errors['questionOptional'].text 
+            }) }}
+          {% endif %}
+
+          {% if data.addJourney == 'addAnother1' %}
+            {% if data.groupQuestions == 'newQuestionRepeats' %}
+              {% call govukFieldset({
+                legend: {
+                  text: "How many times can people answer this question?",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              }) %}
+
+                {{ govukInput({
+                  formGroup: {
+                    classes: "govuk-!-display-inline-block govuk-!-margin-right-4"
+                  },
+                  label: {
+                    text: "Min"
+                  },
+                  classes: "govuk-input--width-2",
+                  id: "minimum-loop",
+                  name: "minLoop",
+                  value: pageData['minLoop'],
+                  errorMessage: { text: errors['minLoop'].text } if errors['minLoop'].text 
+                }) }}
+
+                {{ govukInput({
+                  formGroup: {
+                    classes: "govuk-!-display-inline-block"
+                  },
+                  label: {
+                    text: "Max"
+                  },
+                  classes: "govuk-input--width-3",
+                  id: "maximum-loop",
+                  name: "maxLoop",
+                  value: pageData['maxLoop'],
+                  errorMessage: { text: errors['maxLoop'].text } if errors['maxLoop'].text 
+                }) }}
+
+              {% endcall %}
+            {% endif %}
+          {% elif data.addJourney == 'addAnother2' %}
+            {{ govukRadios({
+              classes: "govuk-radios--inline",
+              name: "repeatQuestion",
+              fieldset: {
+                legend: {
+                  text: "Can people answer this question more than once?",
+                  classes: "govuk-fieldset__legend--m"
+                }
+              },
+              items: [
+                {
+                  value: "Yes",
+                  text: "Yes",
+                  checked: checked(namePrefix + "['repeatQuestion']", "Yes")
+                },
+                {
+                  value: "No",
+                  text: "No",
+                  checked: checked(namePrefix + "['repeatQuestion']", "No")
+                }
+              ],
+              errorMessage: { text: errors['repeatQuestion'].text } if errors['repeatQuestion'].text
             }) }}
           {% endif %}
 
@@ -178,14 +241,11 @@
             value: "editPage"
           }) }}
         
-          {# If we are not sure what the back link is going to don’t show the bottom link #}
-          {% if previousPageText !== 'Back' %}
           <p class="govuk-body">
-            <a class="govuk-link" href="{{ previousPageLink }}" target="_parent">
-              {{ previousPageText }}
+            <a class="govuk-link" href="/form-designer/clear-empty" target="_parent">
+              Back to your questions
             </a>
           </p>
-          {% endif %}
 
       </form>
     </div>

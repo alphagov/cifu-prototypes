@@ -1,0 +1,114 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageName = 'Create a new question set' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageName }} - {{ data.formTitle  or '[formTitle]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:history.go(-1)" target="_parent">
+    Back
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form" class="form" method="post" novalidate>
+
+        {% if containsErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorList
+        }) }}
+        {% endif %}
+
+        <span class="govuk-caption-l">{{ data.formTitle or '[formTitle]' }}</span>
+        <h1 class="govuk-heading-l">{{ pageName }}</h1>
+
+        <p class="govuk-body-l">
+          A question set lets you ask someone for multiple pieces of information related to one thing.
+        </p>
+        <p class="govuk-body-l">
+          This means you do not need to manually duplicate questions that may require more than one answer. 
+        </p>
+        <p class="govuk-body-l">
+          It also lets people decide how many times they need to answer such questions.
+        </p>
+
+        {{ govukInput({
+          label: {
+            text: "Give this question set a name",
+            classes: "govuk-label--m"
+          },
+          hint: {
+            text: "Use a descriptive name - for example, ‘Applicant information’"
+          },
+          id: "group-name",
+          name: "groupName",
+          value: groupData['groupName'],
+          errorMessage: { text: errors['groupName'].text } if errors['groupName'].text 
+        }) }}
+
+        {% call govukFieldset({
+          legend: {
+            text: "How many times can people answer this question set?",
+            classes: "govuk-fieldset__legend--m"
+          }
+        }) %}
+
+          {{ govukInput({
+            formGroup: {
+              classes: "govuk-!-display-inline-block govuk-!-margin-right-4"
+            },
+            label: {
+              text: "Min"
+            },
+            classes: "govuk-input--width-2",
+            id: "minimum-loop",
+            name: "minLoop",
+            value: groupData['minLoop'],
+            errorMessage: { text: errors['minLoop'].text } if errors['minLoop'].text 
+          }) }}
+
+          {{ govukInput({
+            formGroup: {
+              classes: "govuk-!-display-inline-block"
+            },
+            label: {
+              text: "Max"
+            },
+            classes: "govuk-input--width-3",
+            id: "maximum-loop",
+            name: "maxLoop",
+            value: groupData['maxLoop'],
+            errorMessage: { text: errors['maxLoop'].text } if errors['maxLoop'].text 
+          }) }}
+
+        {% endcall %}
+
+        {% if (data.addJourney == 'addAnother2') %}
+          {{ govukButton({
+            text: "Save and continue",
+            name: "action",
+            value: "saveGroup"
+          }) }}
+        {% elif (data.changelink == 'change') %}
+          {{ govukButton({
+            text: "Save and continue",
+            name: "action",
+            value: "saveChanges"
+          }) }}
+        {% else %}
+          {{ govukButton({
+            text: "Save and add questions",
+            name: "action",
+            value: "saveAndAddQuestion"
+          }) }}
+        {% endif %}
+      </form>
+    </div>
+  </div>
+{% endblock %}

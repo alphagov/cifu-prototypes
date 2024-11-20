@@ -86,7 +86,9 @@
       }) }}
     {% endif %}
 
-    <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
+    <span class="govuk-caption-l">
+      Question {{ pageId | int + 1 }} {% if (data.addJourney == 'addAnother1') and (pageData['addToGroup'] != null) -%} - Part of {{ groupData.groupName or '[setName]' }}{%- endif %}
+    </span>
     <h1 class="govuk-heading-l">{{pageTitle}}</h1>
 
     <p class="govuk-body">

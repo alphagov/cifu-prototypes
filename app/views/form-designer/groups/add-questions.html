@@ -1,0 +1,63 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageName = 'Which questions do you want to add to this group?' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageName }} - {{ data.groupName or '[groupName]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:history.go(-1)" target="_parent">
+    Back
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form" class="form" method="post" novalidate>
+
+        {% if containsErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorList
+        }) }}
+        {% endif %}
+        
+        <span class="govuk-caption-l">{{ data.groupName or '[groupName]' }}</span>
+        {{ govukCheckboxes({
+          name: "groupQuestions",
+          fieldset: {
+            legend: {
+              text: pageName,
+              isPageHeading: true,
+              classes: "govuk-fieldset__legend--l"
+            }
+          },
+          hint: {
+            text: "Select all that apply."
+          },
+          items: [
+            {
+              value: "question1",
+              text: "1. Question text"
+            },
+            {
+              value: "question2",
+              text: "2. Question text"
+            },
+            {
+              value: "question3",
+              text: "3. Question text"
+            }
+          ]
+        }) }}
+
+        {{ govukButton({
+          text: "Save and continue"
+        }) }}
+      </form>
+    </div>
+  </div>
+{% endblock %}

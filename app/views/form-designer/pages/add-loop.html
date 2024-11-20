@@ -1,0 +1,73 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageName = 'How many times can people answer this question?' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageName }} - {{ data.formTitle or '[formTitle]' }} - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="javascript:history.go(-1)" target="_parent">
+    Back
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form id="form" class="form" method="post" novalidate>
+
+        {% if containsErrors %}
+        {{ govukErrorSummary({
+          titleText: "There is a problem",
+          errorList: errorList
+        }) }}
+        {% endif %}
+        
+        <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
+        {% call govukFieldset({
+          legend: {
+            text: pageName,
+            isPageHeading: true,
+            classes: "govuk-fieldset__legend--l"
+          },
+          errorMessage: { text: errors['minLoop'].text } if errors['minLoop'].text 
+        }) %}
+
+          {{ govukInput({
+            formGroup: {
+              classes: "govuk-!-display-inline-block govuk-!-margin-right-4"
+            },
+            label: {
+              text: "Min"
+            },
+            classes: "govuk-input--width-2",
+            id: "minimum-loop",
+            name: "minLoop",
+            value: pageData['minLoop']
+          }) }}
+
+          {{ govukInput({
+            formGroup: {
+              classes: "govuk-!-display-inline-block"
+            },
+            label: {
+              text: "Max"
+            },
+            classes: "govuk-input--width-3",
+            id: "maximum-loop",
+            name: "maxLoop",
+            value: pageData['maxLoop']
+          }) }}
+
+        {% endcall %}
+
+        {{ govukButton({
+          text: "Continue"
+        }) }}
+        
+      </form>
+    </div>
+  </div>
+{% endblock %}

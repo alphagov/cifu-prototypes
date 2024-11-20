@@ -6,13 +6,6 @@
   {{ "Error: " if containsErrors }}{{pageTitle}} - GOV.UK Forms
 {% endblock %}
 
-{% block beforeContent %}
-  {# Back links are handled in routes.js #}
-  <a class="govuk-back-link" href="{{ previousPageLink }}" target="_parent">
-    {{ previousPageText }}
-  </a>
-{% endblock %}
-
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
@@ -40,7 +33,9 @@
             }) }}
           {% endif %}
 
-          <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
+          <span class="govuk-caption-l">
+            Question {{ pageId | int + 1 }} {% if (data.addJourney == 'addAnother1') and (pageData['addToGroup'] != null) -%} - Part of {{ groupData.groupName or '[setName]' }}{%- endif %}
+          </span>
           <h1 class="govuk-heading-l">{{pageTitle}}</h1>
 
           <p class="govuk-body">
@@ -174,15 +169,12 @@
             name: "action",
             value: "editPage"
           }) }}
-        
-          {# If we are not sure what the back link is going to don’t show the bottom link #}
-          {% if previousPageText !== 'Back' %}
+
           <p class="govuk-body">
-            <a class="govuk-link" href="{{ previousPageLink }}" target="_parent">
-              {{ previousPageText }}
+            <a class="govuk-link" href="/form-designer/clear-empty" target="_parent">
+              Back to your questions
             </a>
           </p>
-          {% endif %}
 
       </form>
     </div>
