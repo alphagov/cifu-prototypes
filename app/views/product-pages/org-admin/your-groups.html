@@ -1,0 +1,93 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Your groups' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set upgradeNotification = false %}
+      {% for group in data.groupsList %}
+        {% if group.groupStatus === 'Upgrade' %}
+          {% set upgradeNotification = true %}
+        {% endif %}
+      {% endfor %}
+
+      {% if upgradeNotification %}
+        {% set orgAdminRequestNotificationHTML %}
+        <h3 class="govuk-notification-banner__heading">
+          You have one request to upgrade a trial group.
+        </h3>
+        {% endset %}
+
+        {{ govukNotificationBanner({
+        html: orgAdminRequestNotificationHTML
+      }) }}
+      {% endif %}
+
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+    </div>
+    <div class="govuk-grid-column-full">
+      {% for status, group in groupsList | groupby('groupStatus') %}
+        <table class="govuk-table">
+          <caption class="govuk-table__caption govuk-table__caption--m">{{ status }}
+            requests</caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header govuk-!-width-one-half">Group name</th>
+              <th scope="col" class="govuk-table__header govuk-table__header--numeric">Created by</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            {% for group in groupsList | sort(false, true, 'groupName') %}
+              {% if group.groupStatus == status %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">
+                    <a href="{{ group.groupName | replace(' ','-') }}/your-forms" class="govuk-link">{{ group.groupName }}</a>
+                  </td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">{{ group.createdBy }}</td>
+                </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endfor %}
+    </div>
+
+    <div class="govuk-grid-column-two-thirds">
+
+      {{ govukButton({
+        text: "Create a group",
+        href: "create-new-group",
+        classes: "govuk-button--secondary"
+      }) }}
+
+      {% set groupDetailHTML %}
+      <p class="govuk-body">
+        Each form is created inside a group. Anyone with a GOV.UK Forms account can make a group. They can add people from their organisation to that group to view, create and edit forms in it.
+      </p>
+      <p class="govuk-body">
+        Because you’re an organisation admin, you can access all the groups in your organisation.
+      </p>
+      <p class="govuk-body">
+        When a group is first created it will be a ‘trial’ group. That means forms in the group cannot be made live.
+      </p>
+      <p class="govuk-body">
+        As an organisation admin, you can upgrade a trial group to an ‘active’ group so forms in that group can be made live. People will be able to send a request to you to ask for their trial group to be upgraded.
+      </p>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "What is a ‘group’?",
+        html: groupDetailHTML
+      }) }}
+
+    </div>
+  </div>
+{% endblock content %}

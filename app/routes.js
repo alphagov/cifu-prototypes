@@ -13,6 +13,7 @@ const path = require('path')
 const sessionDataDefaults = require('./data/session-data-defaults.js')
 const returningSessionDataDefaults = require('./data/returning-session-data-defaults')
 const returningSessionDataDefaultsA11y = require('./data/returning-session-data-defaults-a11y')
+const roadmapSessionData = require('./data/roadmap-session-data')
 
 // Markdown support
 const markdown = require('@lfdebrux/nunjucks-markdown')
@@ -39,6 +40,29 @@ setPageIndexToArrayPosition = (page, index) => {
   page.pageIndex = index
   return page
 }
+
+
+// ROADMAP ROUTE
+router.use('/forms-roadmap/load', (req, res) => {
+  req.session.data = roadmapSessionData
+  res.redirect('/forms-roadmap')
+})
+
+router.get('/forms-roadmap', (req, res) => {
+  res.render('/forms-roadmap')
+})
+
+router.use('/feature-detail/:featureId(\\d+)/page/load', (req, res) => {
+  req.session.data = roadmapSessionData
+  var feature = parseInt(req.params.featureId, 10)
+  req.session.data.thisFeature = feature
+  res.redirect('/feature-detail/' + feature + '/page')
+})
+router.get('/feature-detail/:featureId(\\d+)/page', (req, res) => {
+  res.render('/feature-detail/page')
+})
+
+
 
 // ROUTES FOR EXAMPLE FORMS
 
@@ -96,6 +120,9 @@ router.use('/form-designer/name-your-form', function (req, res, next) {
   // get the previous page URL
   var previousPage = req.session.data.referer
 
+  var journey = req.session.data.referer.split('/')
+  var formsListURL = journey[journey.length - 2]
+
   // set the default back link
   var previousPageLink = `your-form`
   var previousPageText = 'Back to create a form'
@@ -105,6 +132,12 @@ router.use('/form-designer/name-your-form', function (req, res, next) {
     if (previousPage.includes('your-forms')) {
       previousPageLink = `your-forms`
       previousPageText = 'Back to your forms'
+    }
+
+    if (previousPage.includes('/product-pages/group-admin/')) {
+      previousPageLink = `/product-pages/group-admin/` + formsListURL + '/' + previousPageLink
+    } else if (previousPage.includes('/product-pages/org-admin/')) {
+      previousPageLink = `/product-pages/org-admin/` + formsListURL + '/' + previousPageLink
     }
   }
 
@@ -117,6 +150,7 @@ router.use('/form-designer/name-your-form', function (req, res, next) {
 
 // Name your form - GET
 router.get('/form-designer/name-your-form', function (req, res) {
+  req.session.data.createFormReferer = req.session.data.referer
   return res.render('form-designer/name-your-form', {
     previousPageText: req.session.data.previousPageText,
     previousPageLink: req.session.data.previousPageLink
@@ -126,7 +160,6 @@ router.get('/form-designer/name-your-form', function (req, res) {
 // Edit form name, handling validation errors
 router.post('/form-designer/name-your-form', function (req, res) {
   const { formTitle } = req.session.data
-
   const errors = {};
   // if the formTitle is blank, then error
   if (!formTitle || !formTitle.length) {
@@ -155,6 +188,40 @@ router.post('/form-designer/name-your-form', function (req, res) {
   }
 })
 
+// Middleware name your form
+router.use('/form-designer/your-form', function (req, res, next) {
+
+  // get the previous page URL
+  var createNewFormPage = req.session.data.createFormReferer.split('/')
+  var formsListURL = createNewFormPage[createNewFormPage.length - 2]
+
+  // set the default back link
+  var previousPageLink = `javascript:history.back()`
+  var previousPageText = 'Back'
+
+  if (createNewFormPage) {
+    // set the GOV.UK Forms home back link
+    if (createNewFormPage.includes('your-forms')) {
+      previousPageText = 'Back to your forms'
+      previousPageLink = `your-forms`
+    }
+
+    if (createNewFormPage.includes('product-pages')) {
+      if (createNewFormPage.includes('group-admin')) {
+        previousPageLink = `/product-pages/group-admin/` + formsListURL + '/' + previousPageLink
+      } else if (createNewFormPage.includes('org-admin')) {
+        previousPageLink = `/product-pages/org-admin/` + formsListURL + '/' + previousPageLink
+      }
+    }
+    
+  }
+
+  // make back link available in the view
+  req.session.data.previousPageLink = previousPageLink
+  req.session.data.previousPageText = previousPageText
+
+  next();
+})
 // Your form task list page - used to load and clear out success pageData
 // could we also add timer to the notification banner here?
 // .govuk-notification-banner__header
@@ -205,7 +272,9 @@ router.get('/form-designer/your-form', function (req, res) {
 
   return res.render('form-designer/your-form', {
     successMessage: successMessage,
-    sections: sections
+    sections: sections,
+    previousPageText: req.session.data.previousPageText,
+    previousPageLink: req.session.data.previousPageLink
   })
 })
 
@@ -1005,6 +1074,23 @@ router.get('/form-designer/returning', (req, res) => {
 router.get('/form-designer/returning-again', (req, res) => {
   req.session.data = returningSessionDataDefaults
   res.redirect('/form-designer/your-forms')
+})
+
+
+// =====================================
+// ROUTES FOR PRODUCT PAGES
+// =====================================
+
+// Set a value to use in the back button to return to previous page
+router.use('/product-pages/*', function (req, res, next) {
+
+  const referer = req.headers.referer ?? '';
+  // Should validate the referer URL is part of our application
+  req.session.data.referer = referer
+
+  req.session.data.journey = req.session.data.journey
+  
+  next();
 })
 
 

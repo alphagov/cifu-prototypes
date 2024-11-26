@@ -1,0 +1,66 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Feature name goes here' %}
+{% for feature in data.featureList %}
+  {% if loop.index0 === data.thisFeature | int %}
+    {% set pageTitle = feature.featureName | capitalize %}
+  {% endif %}
+{% endfor %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  -
+  {{ serviceName }}
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="/forms-roadmap/load" target="_parent">
+    Back to GOV.UK Forms roadmap
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        {{ pageTitle }}
+      </h1>
+      {% for feature in data.featureList %}
+        {% if loop.index0 === data.thisFeature | int %}
+          <h2 class="govuk-heading-m">
+            Feature ID
+          </h2>
+          <p class="govuk-body">
+            {{ data.thisFeature }}
+          </p>
+
+          <h2 class="govuk-heading-m">
+            Feature overview
+          </h2>
+          <p class="govuk-body">
+            {{ feature.featureDetail }}
+          </p>
+
+          <h2 class="govuk-heading-m">
+            About this feature
+          </h2>
+          <p class="govuk-body">
+            {{ feature.featureContent }}
+          </p>
+
+          <h2 class="govuk-heading-m">
+            Associated tags
+          </h2>
+          <ul class="govuk-list">
+            {% for tag in feature.featureTags %}
+              <li>
+                {{ tag }}
+              </li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% endblock content %}

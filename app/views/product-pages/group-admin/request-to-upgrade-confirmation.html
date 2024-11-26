@@ -1,0 +1,31 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Your upgrade request has been sent' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {{ govukPanel({
+        titleText: pageTitle
+      }) }}
+
+      <h2 class="govuk-heading-m">What happens next</h2>
+      <p class="govuk-body">
+        Your request has been sent to your organisation’s GOV.UK Forms admins. They will contact you to discuss your request.
+      </p>
+      <p class="govuk-body">
+        We’ll also send you an email when your request is accepted or rejected.
+      </p>
+      <p class="govuk-body">
+        <a href="your-forms" class="govuk-link">Go back to your forms</a>
+      </p>
+
+    </div>
+  </div>
+{% endblock content %}

@@ -1,0 +1,85 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Add an editor or group admin to this group' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="edit-members">Back to members of this group</a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <form class="form" method="post" novalidate="novalidate">
+
+        {% if containsErrors %}
+          {{ govukErrorSummary({
+            titleText: "There is a problem",
+            errorList: errorList
+          }) }}
+        {% endif %}
+
+        <span class="govuk-caption-l">{{ data['groupName'] or 'Your test forms' }}</span>
+        <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+        <p class="govuk-body">
+          The person you’re adding to this group must:
+        </p>
+        <ul class="govuk-list  govuk-list--bullet">
+          <li>be from the same organisation as you</li>
+          <li>already have a GOV.UK Forms account</li>
+        </ul>
+
+        <p class="govuk-body">
+          You must use their government email address.
+        </p>
+
+        {{ govukInput({
+          label: {
+            text: 'Enter the email address of the person you want to add',
+            classes: "govuk-label--m"
+          },
+          id: "add-email",
+          name: "emailToAdd",
+          errorMessage: { text: errors['emailToAdd'].text } if errors['emailToAdd'].text
+        }) }}
+
+        {{ govukRadios({
+          name: "userRoleToAdd",
+          fieldset: {
+            legend: {
+              text: "What role should they have in this group?",
+              classes: "govuk-fieldset__legend--m"
+            }
+          },
+          items: [
+            {
+              value: "Editor",
+              text: "Editor",
+              hint: {
+                text: "They’ll be able to create and edit forms in this group."
+              }
+            },
+            {
+              value: "Group admin",
+              text: "Group admin",
+              hint: {
+                text: "They’ll be able to create and edit forms, make forms live and add editors to this group."
+              }
+            }
+          ],
+          errorMessage: { text: errors['userRoleToAdd'].text } if errors['userRoleToAdd'].text
+        }) }}
+
+        {{ govukButton({
+          text: "Add this person"
+        }) }}
+
+      </form>
+    </div>
+  </div>
+{% endblock content %}

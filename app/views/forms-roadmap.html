@@ -1,0 +1,59 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'GOV.UK Forms roadmap' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  -
+  {{ serviceName }}
+{% endblock %}
+
+{% block beforeContent %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="/index" target="_parent">
+    Back to prototype home
+  </a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+      <h1 class="govuk-heading-l">
+        {{ pageTitle }}
+      </h1>
+
+      {% set currentStatus = 'now' %}
+      {% for list in data.featureList %}
+        {% if currentStatus == list.status %}
+          <h2 class="govuk-heading-m">
+            {{ list.status | capitalize }}
+          </h2>
+          <ul class="govuk-task-list">
+            {% for feature in data.featureList %}
+              {% if list.status === feature.status %}
+                <li class="govuk-task-list__item govuk-task-list__item--with-link">
+                  <div class="govuk-task-list__name-and-hint">
+                    <a class="govuk-link govuk-task-list__link" href="/feature-detail/{{ loop.index0 }}/page/load" aria-describedby="roadmap-feature-{{ loop.index0 }}-status">
+                      {{ feature.featureName }}
+                    </a>
+                    <div id="roadmap-feature-{{ loop.index0 }}-hint" class="govuk-task-list__hint">
+                      {{ feature.featureDetail }}
+                    </div>
+                  </div>
+                  <div class="govuk-task-list__status" id="roadmap-feature-{{ loop.index0 }}-status">
+                    {{ feature.status }}
+                  </div>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+          {% if currentStatus == 'now' %}
+            {% set currentStatus = 'next' %}
+          {% else %}
+            {% set currentStatus = 'later' %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

@@ -9,6 +9,10 @@
 @import "patterns/moj-messages";
 @import "patterns/govuk-publishing-document-list";
 
+// Fix the weird alignment issue with the header navigation (this helps align with product pages)
+.govuk-header__navigation {
+  padding: 0;
+}
 
 /* PREVIEW QUESTION - EDIT JOURNEY
 ================================== */

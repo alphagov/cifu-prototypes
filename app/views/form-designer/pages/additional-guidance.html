@@ -3,7 +3,8 @@
 {% set pageTitle = 'Add guidance' %}
 
 {% block pageTitle %}
-  {{ "Error: " if containsErrors }}{{pageTitle}} - GOV.UK Forms
+  {{ "Error: " if containsErrors }}{{pageTitle}}
+  - GOV.UK Forms
 {% endblock %}
 
 {% block beforeContent %}
@@ -17,45 +18,46 @@
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
 
-      <form id="form" class="form" method="post" novalidate>
+      <form id="form" class="form" method="post" novalidate="novalidate">
 
-          {% if containsErrors %}
-            {{ govukErrorSummary({
+        {% if containsErrors %}
+          {{ govukErrorSummary({
               titleText: "There is a problem",
               errorList: errorList
             }) }}
-          {% endif %}
+        {% endif %}
 
-          {% if successMessage %}
-            {% set successHTML %}
-              <a class="govuk-notification-banner__link" href="#preview-guidance-text">
-                <h3 class="govuk-notification-banner__heading">
-                  {{successMessage}}
-                </h3>
-              </a>
-              {% endset %}
-            {{ govukNotificationBanner({
+        {% if successMessage %}
+          {% set successHTML %}
+          <a class="govuk-notification-banner__link" href="#preview-guidance-text">
+            <h3 class="govuk-notification-banner__heading">
+              {{successMessage}}
+            </h3>
+          </a>
+          {% endset %}
+          {{ govukNotificationBanner({
               type: 'success',
               html: successHTML
             }) }}
-          {% endif %}
+        {% endif %}
 
-          <span class="govuk-caption-l">Question {{ pageId | int + 1 }}</span>
-          <h1 class="govuk-heading-l">{{pageTitle}}</h1>
+        <span class="govuk-caption-l">Question
+          {{ pageId | int + 1 }}</span>
+        <h1 class="govuk-heading-l">{{pageTitle}}</h1>
 
-          <p class="govuk-body">
-            Use guidance if you need to:
-          </p>
-          <ul class="govuk-list govuk-list--bullet">
-            <li>explain how to answer the question in more detail</li>
-            <li>provide more context</li>
-            <li>format your content - for example, with links, sub-headings or lists</li>
-          </ul>
+        <p class="govuk-body">
+          Use guidance if you need to:
+        </p>
+        <ul class="govuk-list govuk-list--bullet">
+          <li>explain how to answer the question in more detail</li>
+          <li>provide more context</li>
+          <li>format your content - for example, with links, sub-headings or lists</li>
+        </ul>
 
-          {% set namePrefix = "pages[" + pageIndex + "]" %}
+        {% set namePrefix = "pages[" + pageIndex + "]" %}
 
-          <!-- Give your page a heading -->
-          {{ govukInput({
+        <!-- Give your page a heading -->
+        {{ govukInput({
             label: {
               text: "Give your page a heading",
               classes: "govuk-label--m"
@@ -69,8 +71,8 @@
             errorMessage: { text: errors['page-name'].text } if errors['page-name'].text 
           }) }}
 
-          <!-- Add detailed guidance input -->
-          {{ govukTextarea({
+        <!-- Add detailed guidance input -->
+        {{ govukTextarea({
             label: {
               text: "Add guidance text",
               classes: "govuk-label--m"
@@ -85,74 +87,73 @@
             errorMessage: { text: errors['additional-guidance-text'].text } if errors['additional-guidance-text'].text 
           }) }}
 
-
-          <!-- Preview guidance text secondary button -->
-          {{ govukButton({
+        <!-- Preview guidance text secondary button -->
+        {{ govukButton({
             text: "Preview guidance",
             classes: "govuk-button--secondary",
             name: "action",
             value: "previewGuidance"
           }) }}
 
+        <!-- Formatting help -->
+        <h2 class="govuk-heading-m">Formatting help</h2>
 
-          <!-- Formatting help -->
-          <h2 class="govuk-heading-m">Formatting help</h2>
-
-          <h3 class="govuk-heading-s">Links and URLs</h3>
-          <p class="govuk-body">
-            To add a link, use square brackets [ ] around the link text, and round brackets ( ) around the full URL. For example:
-          </p>
-          {{ govukInsetText({
+        <h3 class="govuk-heading-s">Links and URLs</h3>
+        <p class="govuk-body">
+          To add a link, use square brackets [ ] around the link text, and round brackets ( ) around the full URL. For example:
+        </p>
+        {{ govukInsetText({
             text: "[Link text](https://www.gov.uk/link-text-url)"
           }) }}
 
-          <h3 class="govuk-heading-s">Second-level headings</h3>
-          <p class="govuk-body">
-            To add a second-level heading, use 2 hashtags followed by a space. For example:
-          </p>
-          {{ govukInsetText({
+        <h3 class="govuk-heading-s">Second-level headings</h3>
+        <p class="govuk-body">
+          To add a second-level heading, use 2 hashtags followed by a space. For example:
+        </p>
+        {{ govukInsetText({
             text: "## This is a second-level heading"
           }) }}
 
-          <h3 class="govuk-heading-s">Third-level headings</h3>
-          <p class="govuk-body">
-            For a third-level heading, use 3 hashtags followed by a space. For example:
-          </p>
-          {{ govukInsetText({
+        <h3 class="govuk-heading-s">Third-level headings</h3>
+        <p class="govuk-body">
+          For a third-level heading, use 3 hashtags followed by a space. For example:
+        </p>
+        {{ govukInsetText({
             text: "### This is a third-level heading"
           }) }}
 
-          <h3 class="govuk-heading-s">Bulleted lists</h3>
-          <p class="govuk-body">
-            To add bullet points, start each item with * (asterisk) or - (dash). Use one space after the asterisk or dash.
-          </p>
-          <p class="govuk-body">
-            You need one empty line space before the bullets start, and one at the end. For example:
-          </p>
-          {% set bullets = ['First bullet point','Second bullet point','Third bullet point'] %}
-          <div class="govuk-inset-text">
-            {% for bullet in bullets %}
-              * {{ bullet }}<br>
-            {% endfor %}
-          </div>
+        <h3 class="govuk-heading-s">Bulleted lists</h3>
+        <p class="govuk-body">
+          To add bullet points, start each item with * (asterisk) or - (dash). Use one space after the asterisk or dash.
+        </p>
+        <p class="govuk-body">
+          You need one empty line space before the bullets start, and one at the end. For example:
+        </p>
+        {% set bullets = ['First bullet point', 'Second bullet point', 'Third bullet point'] %}
+        <div class="govuk-inset-text">
+          {% for bullet in bullets %}
+            *
+            {{ bullet }}<br>
+          {% endfor %}
+        </div>
 
-          <h3 class="govuk-heading-s">Numbered lists</h3>
-          <p class="govuk-body">
-            Use numbers for each list item, followed by a full stop. Make sure there is one space after the full stop.
-          </p>
-          <p class="govuk-body">
-            You need one empty line space before the numbers start, and one at the end. For example:
-          </p>
-          {% set numbered = ['First item','Second item','Third item'] %}
-          <div class="govuk-inset-text">
-            {% for number in numbered %}
-              {{ loop.index }}. {{ number }}<br>
-            {% endfor %}
-          </div>
+        <h3 class="govuk-heading-s">Numbered lists</h3>
+        <p class="govuk-body">
+          Use numbers for each list item, followed by a full stop. Make sure there is one space after the full stop.
+        </p>
+        <p class="govuk-body">
+          You need one empty line space before the numbers start, and one at the end. For example:
+        </p>
+        {% set numbered = ['First item', 'Second item', 'Third item'] %}
+        <div class="govuk-inset-text">
+          {% for number in numbered %}
+            {{ loop.index }}.
+            {{ number }}<br>
+          {% endfor %}
+        </div>
 
-
-          <!-- Preview guidance text -->
-          {% if pageData['additional-guidance-text'] %}
+        <!-- Preview guidance text -->
+        {% if pageData['additional-guidance-text'] %}
           <h2 class="govuk-heading-m" id="preview-guidance-text">
             Preview your guidance text
           </h2>
@@ -167,22 +168,22 @@
               Edit guidance text
             </a>
           </p>
-          {% endif %}
+        {% endif %}
 
-          {{ govukButton({
+        {{ govukButton({
             text: "Continue",
             name: "action",
             value: "editPage"
           }) }}
-        
-          {# If we are not sure what the back link is going to don’t show the bottom link #}
-          {% if previousPageText !== 'Back' %}
+
+        {# If we are not sure what the back link is going to don’t show the bottom link #}
+        {% if previousPageText !== 'Back' %}
           <p class="govuk-body">
             <a class="govuk-link" href="{{ previousPageLink }}" target="_parent">
               {{ previousPageText }}
             </a>
           </p>
-          {% endif %}
+        {% endif %}
 
       </form>
     </div>
@@ -190,8 +191,8 @@
 {% endblock %}
 
 {% block pageScripts %}
-<script type="text/javascript">
-  // call function from `assets/javascripts/application.js`
-  // removeSuccessNotification();
-</script>
+  <script type="text/javascript">
+    // call function from `assets/javascripts/application.js`
+    // removeSuccessNotification();
+  </script>
 {% endblock %}

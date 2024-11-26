@@ -1,0 +1,74 @@
+{% extends "govuk-prototype-kit/layouts/govuk-branded.html" %}
+
+{% block stylesheets %}
+  <link href="/public/stylesheets/product-page.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block header %}
+  {{ govukHeader({
+    homepageUrl: "/",
+    productName: "Forms",
+    serviceUrl: "/",
+    navigation: [
+      {
+        href: "/product-pages/" + groupJourney + "/get-started",
+        text: "Get started",
+        active: true if activeGetStarted
+      },
+      {
+        href: "/product-pages/basic/features",
+        text: "Features",
+        active: true if activeFeatures
+      },
+      {
+        href: "/product-pages/basic/support",
+        text: "Support",
+        active: true if activeSupport
+      },
+      {
+        href: "https://admin.research.forms.service.gov.uk/",
+        text: "Sign in"
+      }
+    ]
+  }) }}
+{% endblock %}
+
+{% if (GOVUKPrototypeKit.isDevelopment) %}
+  {% set formsFooterItems = [
+    {
+      href: "/manage-prototype",
+      text: "Manage your prototype"
+    },
+    {
+      href: "/prototype-admin/show-data",
+      text: "Show data"
+    },
+    {
+      href: "/manage-prototype/clear-data",
+      text: "Clear data"
+    },
+    {
+      href: "/form-designer/returning",
+      text: "Restore default form data"
+    }
+  ] %}
+{% else %}
+  {% set formsFooterItems = [
+    {
+      href: "/manage-prototype/clear-data",
+      text: "Clear data"
+    },
+    {
+      href: "/form-designer/returning",
+      text: "Restore default form data"
+    }
+  ] %}
+{% endif %}
+
+{% block footer %}
+  {{ govukFooter({
+    meta: {
+      items: formsFooterItems
+    }
+  }) }}
+{% endblock %}

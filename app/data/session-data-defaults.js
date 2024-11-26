@@ -70,5 +70,157 @@ module.exports = {
 
   textMultipleLinesQuestionHint: 'Ask the question the way you would in person. For example, ‘Why do you want to apply for this role?’',
   textMultipleLinesHintHint: 'You can add a short hint to help people answer the question. For example, you could give a bit more detail about the information you need.',
-  textLengthInputTypeTitle: 'Length'
+  textLengthInputTypeTitle: 'Length',
+
+  // group admin user list
+  groupMembers: [
+    {
+      "userName": "Hannah Cooper", 
+      "userEmail": "hannah.cooper@cabinet-office.gov.uk", 
+      "userType": "Group admin" 
+    },
+    {
+      "userName": "Hazal Arpalikli", 
+      "userEmail": "hazal.arpalikli@cabinet-office.gov.uk", 
+      "userType": "Group admin" 
+    },
+    {
+      "userName": "Tom Iles", 
+      "userEmail": "tom.iles@cabinet-office.gov.uk", 
+      "userType": "Editor" 
+    }
+  ],
+
+  // Forms user list
+  formsUsers: [
+    {
+      "userName": "Betty Mwema", 
+      "userEmail": "betty.mwema@cabinet-office.gov.uk",
+      "userOrg": "Cabinet Office"
+    },
+    {
+      "userName": "Chris Cameron", 
+      "userEmail": "chris.cameron@cabinet-office.gov.uk",
+      "userOrg": "Cabinet Office"
+    },
+    {
+      "userName": "David Biddle", 
+      "userEmail": "david.biddle@cabinet-office.gov.uk",
+      "userOrg": "Cabinet Office"
+    },
+    {
+      "userName": "Hannah Cooper", 
+      "userEmail": "hannah.cooper@cabinet-office.gov.uk",
+      "userOrg": "Cabinet Office"
+    },
+    {
+      "userName": "Hazal Arpalikli", 
+      "userEmail": "hazal.arpalikli@cabinet-office.gov.uk",
+      "userOrg": "Cabinet Office"
+    },
+    {
+      "userName": "Oliver Quinlan", 
+      "userEmail": "oliver.quinlan@cabinet-office.gov.uk",
+      "userOrg": "Cabinet Office"
+    },
+
+    {
+      "userName": "Tom Iles",
+      "userEmail": "tom.iles@cabinet-office.gov.uk",
+      "userOrg": "Government Digital Service (GDS)"
+    },
+    {
+      "userName": "Trevor Wilson", 
+      "userEmail": "trevor.wilson@cabinet-office.gov.uk",
+      "userOrg": "Government Digital Service (GDS)"
+    },
+    {
+      "userName": "Anika Hughes", 
+      "userEmail": "anika.hughes@cabinet-office.gov.uk",
+      "userOrg": "Government Digital Service (GDS)"
+    },
+
+    {
+      "userName": "Dennis Menace", 
+      "userEmail": "dennis.menace@moj.gov.uk",
+      "userOrg": "Ministry of Justice"
+    },
+    {
+      "userName": "John Smith",
+      "userEmail": "john.smith@hmrc.gov.uk",
+      "userOrg": "HMRC"
+    }
+  ],
+
+  // Group list
+  groupsList: [
+    {
+      "groupName": "Content team",
+      "createdBy": "Tom Iles",
+      "groupStatus": "Active",
+      "formsList": []
+    },
+    {
+      "groupName": "Consultations",
+      "createdBy": "Hazal Arpalikli",
+      "groupStatus": "Active",
+      "formsList": []
+    },
+    {
+      "groupName": "Test forms",
+      "createdBy": "Tom Iles",
+      "groupStatus": "Trial",
+      "formsList": []
+    },
+    {
+      "groupName": "Test group of forms",
+      "createdBy": "Hannah Cooper",
+      "groupStatus": "Trial",
+      "formsList": []
+    },
+    {
+      "groupName": "Emergency contact forms",
+      "createdBy": "Betty Mwema",
+      "groupStatus": "Trial",
+      "formsList": []
+    },
+
+    {
+      "groupName": "Licensing forms",
+      "createdBy": "Hazal Arpalikli",
+      "groupStatus": "Upgrade",
+      "formsList": [
+        {
+          "formName": "Apply for a dog juggling licence",
+          "formURL": "#",
+          "formCreator": "Hazal Arpalikli",
+          "formStatus": "Draft"
+        },
+        {
+          "formName": "Apply for a name",
+          "formURL": "#",
+          "formCreator": "Hazal Arpalikli",
+          "formStatus": "Draft"
+        },
+        {
+          "formName": "Apply for authorisation to issue Northern Ireland Plant Health Labels (NIPHL)",
+          "formURL": "#",
+          "formCreator": "Hazal Arpalikli",
+          "formStatus": "Draft"
+        },
+        {
+          "formName": "Apply for planning permission to construct a new agricultural building",
+          "formURL": "#",
+          "formCreator": "Hazal Arpalikli",
+          "formStatus": "Draft"
+        },
+        {
+          "formName": "Apply for a passport",
+          "formURL": "#",
+          "formCreator": "Hazal Arpalikli",
+          "formStatus": "Draft"
+        }
+      ]
+    }
+  ]
 }

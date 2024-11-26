@@ -1,32 +1,40 @@
 {% extends "layout-govuk-forms.html" %}
 
+{% set pageTitle = 'Request to upgrade this trial group' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
 {% block beforeContent %}
-<a class="govuk-back-link" href="grouplanding">Back to {{ data['groupName'] or 'your test forms' }}</a>
+  <a class="govuk-back-link" href="your-forms">Back to your forms</a>
 {% endblock %}
 
 {% block content %}
-<div class="govuk-grid-row">
-  <div class="govuk-grid-column-two-thirds">
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
 
-    <span class="govuk-caption-l">{{ data['groupName'] or 'Your test forms' }}</span>
-    <h1 class="govuk-heading-l">
-      Request to upgrade this trial group
-    </h1>
+      <span class="govuk-caption-l">{{ data['groupName'] or 'Your test forms' }}</span>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
 
-    <p class="govuk-body"> If you need to be able to make forms live, you can send a request for this group to be
-      upgraded to an ‘active’ group. </p>
+      <p class="govuk-body">
+        If you need to be able to make forms live, you can send a request for this group to be upgraded to an ‘active’ group.
+      </p>
 
-    <p class="govuk-body">
-      Your request will be sent to your organisation’s GOV.UK Forms admins.
-    </p>
+      <p class="govuk-body">
+        Your request will be sent to your organisation’s GOV.UK Forms admins.
+      </p>
 
-    <div class="govuk-inset-text">
-      Some organisations are restricting who can make forms live in their organisation. Send a request to upgrade to find out if this will affect you.
+      {{ govukInsetText({
+        text: "Some organisations are restricting who can make forms live in their organisation. Send a request to upgrade to find out if this will affect you."
+      }) }}
+
+      {{ govukButton({
+        text: "Send request to upgrade",
+        href: "request-to-upgrade-confirmation"
+      }) }}
+
     </div>
-
-    <a href="confirmation-request-to-upgrade.html" type="submit" class="govuk-button" data-module="govuk-button">
-      Send request to upgrade
-    </a>
-
   </div>
-  {% endblock content %}
+{% endblock content %}

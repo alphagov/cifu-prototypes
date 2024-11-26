@@ -3,29 +3,24 @@
 {% set pageTitle = 'What is the name of your form?' %}
 
 {% block pageTitle %}
-  {{ "Error: " if containsErrors }}{{pageTitle}} - GOV.UK Forms
+  {{ "Error: " if containsErrors }}{{pageTitle}}
+  - GOV.UK Forms
 {% endblock %}
 
 {% block beforeContent %}
-  {% if data['journey'] and data['journey'] == 'groupAdminTasks' %}
-    <a class="govuk-back-link" href="../product-pages/group-admin/grouplanding">Back to your group</a>
-  {% elif data['journey'] and data['journey'] == 'orgAdminTasks' %}
-    <a class="govuk-back-link" href="../product-pages/org-admin/grouplanding">Back to your group</a>
-  {% else %}
-    {# Back links are handled in routes.js #}
-    <a class="govuk-back-link" href="{{ previousPageLink }}" target="_parent">
-      {{ previousPageText }}
-    </a>
-  {% endif %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="{{ previousPageLink }}" target="_parent">
+    {{ previousPageText }}
+  </a>
 {% endblock %}
 
 {% block content %}
   <div class="govuk-grid-row">
     <div class="govuk-grid-column-two-thirds">
-      <form class="form" method="post" novalidate>
+      <form class="form" method="post" novalidate="novalidate">
 
         {% if containsErrors %}
-        {{ govukErrorSummary({
+          {{ govukErrorSummary({
           titleText: "There is a problem",
           errorList: errorList
         }) }}

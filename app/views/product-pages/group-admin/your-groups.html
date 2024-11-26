@@ -1,0 +1,105 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Your groups' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set groupAdminNotificationHTML %}
+      <h3 class="govuk-notification-banner__heading">
+        You cannot make any forms live yet
+      </h3>
+      <p class="govuk-body">
+        Someone from your organisation needs to agree to a ‘Memorandum of Understanding’ with GOV.UK Forms before your organisation can make any forms live.
+      </p>
+      <p class="govuk-body">
+        Speak to your organisation’s GOV.UK publishing team or
+        <a href="#" class="govuk-link" rel="noreferrer noopener" target="_blank">contact the GOV.UK Forms team</a>
+        to start this process.
+      </p>
+      <p class="govuk-body">
+        In the meantime, you can try out making forms in a ‘trial’ group.
+      </p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: groupAdminNotificationHTML
+      }) }}
+
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      <h2 class="govuk-heading-m">Active groups</h2>
+      <p class="govuk-body">
+        You’re not in any active groups.
+      </p>
+    </div>
+
+    {% if data.groupName %}
+    <div class="govuk-grid-column-full">
+      <h2 class="govuk-heading-m">Trial groups</h2>
+      <table class="govuk-table">
+        <thead class="govuk-table__head">
+          <tr class="govuk-table__row">
+            <th scope="col" class="govuk-table__header govuk-!-width-one-half">Group name</th>
+            <th scope="col" class="govuk-table__header govuk-table__header--numeric">Created by</th>
+          </tr>
+        </thead>
+        <tbody class="govuk-table__body">
+          <tr class="govuk-table__row">
+            <td class="govuk-table__cell">
+              <a href="{{ data.groupName | replace(' ','-') }}/your-forms" class="govuk-link">
+                {{ data.groupName }}
+              </a>
+            </td>
+            <td class="govuk-table__cell govuk-table__cell--numeric">
+              {{ data.createdBy or 'Firstname Lastname' }}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="govuk-grid-column-two-thirds">
+      <h2 class="govuk-heading-m">Trial groups</h2>
+      <p class="govuk-body">
+        You’re not in any trial groups.
+      </p>
+    </div>
+    {% endif %}
+
+    <div class="govuk-grid-column-two-thirds">
+      {{ govukButton({
+        text: "Create a group",
+        href: "create-new-group",
+        classes: "govuk-button--secondary"
+      }) }}
+
+      {% set groupDetailHTML %}
+      <p class="govuk-body">
+        Each form is created inside a group. People can be added to a group to create and edit forms in it.
+      </p>
+      <p class="govuk-body">
+        If you need access to an existing form or group, ask someone who has access to that group to add you.
+      </p>
+      <p class="govuk-body">
+        When a group is first created it will be a ‘trial’ group. That means you cannot make any forms in the group live. You can request for a group to be upgraded to an ‘active’ group if you need to make forms live.
+      </p>
+      <p class="govuk-body">
+        If you’re not sure if you should make a new group, speak with your organisation’s GOV.UK publishing team.
+      </p>
+      {% endset %}
+
+      {{ govukDetails({
+        summaryText: "What is a ‘group’?",
+        html: groupDetailHTML
+      }) }}
+
+    </div>
+  </div>
+{% endblock content %}

@@ -1,19 +1,22 @@
 {% extends "layout-govuk-forms.html" %}
 
-{% set pageTitle = data.formTitle or '[formTitle]' if data['status'] === 'Live' else 'Create a form' %}
+{% set pageTitle = data.formTitle or '[formTitle]' if data['status'] === 'Live' else 
+  'Create a form' %}
 
 {% block pageTitle %}
-  {{pageTitle}}{% if data.status == 'Draft' %}: {{ data.formTitle or '[formTitle]' }}{% endif %} - {{serviceName}}
+  {{pageTitle}}
+  {% if data.status == 'Draft' %}:
+    {{ data.formTitle or '[formTitle]' }}
+  {% endif %}
+  -
+  {{serviceName}}
 {% endblock %}
 
 {% block beforeContent %}
-  {% if data['journey'] and data['journey'] == 'groupAdminTasks' %}
-    <a class="govuk-back-link" href="../product-pages/group-admin/grouplanding">Back to your group</a>
-  {% elif data['journey'] and data['journey'] == 'orgAdminTasks' %}
-    <a class="govuk-back-link" href="../product-pages/org-admin/grouplanding">Back to your group</a>
-  {% else %}
-    <a class="govuk-back-link" href="your-forms">Back to your forms</a>
-  {% endif %}
+  {# Back links are handled in routes.js #}
+  <a class="govuk-back-link" href="{{ previousPageLink }}" target="_parent">
+    {{ previousPageText }}
+  </a>
 {% endblock %}
 
 {% block content %}
@@ -21,16 +24,16 @@
     <div class="govuk-grid-column-two-thirds">
 
       {% if data.successMessage %}
-      {{ govukNotificationBanner({
+        {{ govukNotificationBanner({
         type: 'success',
         text: data.successMessage
       }) }}
       {% endif %}
 
       {% if data['status'] === 'Draft' %}
-      {% include './partials/status-draft-form.html' %}
+        {% include './partials/status-draft-form.html' %}
       {% else %}
-      {% include "./partials/status-live-form.html" %}
+        {% include "./partials/status-live-form.html" %}
       {% endif %}
 
     </div>
@@ -39,21 +42,22 @@
 {% endblock %}
 
 {% block pageScripts %}
-<script type="text/javascript">
+  <script type="text/javascript">
 
-  function copyURL() {
-    /* Create new range so we can select a node */
-    var range = document.createRange();
+    function copyURL() {
+      /* Create new range so we can select a node */
+      var range = document.createRange();
 
-    /* Select the contents within node id "formURL" */
-    range.selectNodeContents(document.getElementById("formURL"));
+      /* Select the contents within node id "formURL" */
+      range.selectNodeContents(document.getElementById("formURL"));
 
-    /* Copy the text from the node */
-    navigator.clipboard.writeText(range);
-  }
+      /* Copy the text from the node */
+      navigator
+        .clipboard
+        .writeText(range);
+    }
 
-  // call function from `assets/javascripts/application.js`
-  // removeSuccessNotification();
-
-</script>
+    // call function from `assets/javascripts/application.js`
+    // removeSuccessNotification();
+  </script>
 {% endblock %}

@@ -1,0 +1,83 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = data['groupName'] or 'Your test forms' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="your-groups">Back to your groups</a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% set groupAdminNotificationHTML %}
+      <h3 class="govuk-notification-banner__heading">
+        This is a ‘trial’ group
+      </h3>
+      <p class="govuk-body">
+        You can create forms in this group and test them, but you cannot make them live.
+      </p>
+      <p class="govuk-body">
+        <a href="request-to-upgrade" class="govuk-link">Find out how to upgrade this group so you can make forms live</a>
+      </p>
+      {% endset %}
+
+      {{ govukNotificationBanner({
+        html: groupAdminNotificationHTML
+      }) }}
+
+      <span class="govuk-caption-l">Trial group</span>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      <p class="govuk-body">
+        <a href="create-new-group" class="govuk-link">Change the name of this group</a>
+      </p>
+      <p class="govuk-body">
+        <a href="edit-members" class="govuk-link">Edit members of this group</a>
+      </p>
+
+      {{ govukButton({
+      text: "Create a form",
+      href: "../../form-designer/name-your-form?journey=groupAdminTasks",
+      isStartButton: true
+    }) }}
+    </div>
+
+    {% if data['formTitle'] %}
+      <div class="govuk-grid-column-full">
+        <table class="govuk-table govuk-table--small-text-until-tablet">
+          <caption class="govuk-table__caption govuk-table__caption--m">Forms in ‘{{ data['groupName'] or 'Your test forms' }}’</caption>
+          <thead class="govuk-table__head">
+            <tr class="govuk-table__row">
+              <th scope="col" class="govuk-table__header">Form name</th>
+              <th scope="col" class="govuk-table__header">Created by</th>
+              <th scope="col" class="govuk-table__header govuk-table__header--numeric">Status</th>
+            </tr>
+          </thead>
+          <tbody class="govuk-table__body">
+            <tr class="govuk-table__row">
+              <td class="govuk-table__cell">
+                <a href="../../form-designer/your-form?journey=groupAdminTasks">
+                  {{ data['formTitle'] or 'Apply for a replacement licence' }}
+                </a>
+              </td>
+              <td class="govuk-table__cell">Hazal Arpalikli
+              </td>
+              <td class="govuk-table__cell govuk-table__cell--numeric">
+                <strong class="govuk-tag govuk-tag--yellow">
+                  Draft
+                </strong>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+
+  </div>
+{% endblock content %}

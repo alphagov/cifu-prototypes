@@ -1,0 +1,113 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = groupForms | replace('-',' ') or 'Your test forms' %}
+
+{% block pageTitle %}
+  {{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="../your-groups">Back to your groups</a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <div class="govuk-grid-column-two-thirds">
+
+      {% if successMessage %}
+        {{ govukNotificationBanner({
+          type: 'success',
+          text: successMessage
+        }) }}
+      {% endif %}
+
+      {% set groupStatus = '' %}
+      {% for group in data.groupsList %}
+        {% if group.groupName === groupForms | replace('-',' ') %}
+          {% set groupStatus = group.groupStatus %}
+        {% endif %}
+      {% endfor %}
+
+      {% if (groupStatus !== 'Active') and (groupStatus !== 'Trial') %}
+        {% set orgAdminConfirmUpgradetNotificationHTML %}
+        <h3 class="govuk-notification-banner__heading">
+          A group admin has asked to upgrade this group
+        </h3>
+        <p class="govuk-body">
+          {{ data.groupAdminName or 'Hazal Arpalikli' }}
+          has asked to upgrade this group so they can make forms live.
+        </p>
+        <p class="govuk-body">
+          <a href="upgrade-group" class="govuk-notification-banner__link">
+            Accept or reject this upgrade request
+          </a>
+        </p>
+        {% endset %}
+
+        {{ govukNotificationBanner({
+          html: orgAdminConfirmUpgradetNotificationHTML
+        }) }}
+      {% endif %}
+
+      <span class="govuk-caption-l">
+        {{ groupStatus or 'Trial' }}
+        group
+      </span>
+      <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+
+      <p class="govuk-body">
+        <a href="create-new-group" class="govuk-link">Change the name of this group</a>
+      </p>
+      <p class="govuk-body">
+        <a href="edit-members" class="govuk-link">Edit members of this group</a>
+      </p>
+
+      {{ govukButton({
+        text: "Create a form",
+        href: "/form-designer/name-your-form?journey=orgAdminTasks",
+        isStartButton: true
+      }) }}
+
+    </div>
+
+    {% for group in data.groupsList %}
+      {% if group.groupName === groupForms | replace('-',' ') %}
+        {% if group.formsList | length > 0 %}
+          <div class="govuk-grid-column-full">
+            <table class="govuk-table govuk-table--small-text-until-tablet">
+              <caption class="govuk-table__caption govuk-table__caption--m">
+                Forms in ‘{{ groupForms | replace('-',' ') or 'Your test forms' }}’
+              </caption>
+              <thead class="govuk-table__head">
+                <tr class="govuk-table__row">
+                  <th scope="col" class="govuk-table__header">Form name</th>
+                  <th scope="col" class="govuk-table__header">Created by</th>
+                  <th scope="col" class="govuk-table__header govuk-table__header--numeric">Status</th>
+                </tr>
+              </thead>
+              <tbody class="govuk-table__body">
+                {% for form in group.formsList %}
+                  <tr class="govuk-table__row">
+                    <td class="govuk-table__cell">
+                      <a href="{{ form.formURL }}" class="govuk-link">{{ form.formName }}</a>
+                    </td>
+                    <td class="govuk-table__cell">
+                      {{ form.formCreator }}
+                    </td>
+                    <td class="govuk-table__cell govuk-table__cell--numeric">
+                      <strong class="govuk-tag govuk-tag--yellow">
+                        {{ form.formStatus }}
+                      </strong>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+
+  </div>
+{% endblock content %}

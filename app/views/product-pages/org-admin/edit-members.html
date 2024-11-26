@@ -1,0 +1,104 @@
+{% extends "layout-govuk-forms.html" %}
+
+{% set pageTitle = 'Members of this group' %}
+
+{% block pageTitle %}
+  {{ "Error: " if containsErrors }}{{ pageTitle }}
+  - GOV.UK Forms
+{% endblock %}
+
+{% block beforeContent %}
+  <a class="govuk-back-link" href="your-forms">Back to your forms</a>
+{% endblock %}
+
+{% block content %}
+  <div class="govuk-grid-row">
+    <form class="form" method="post" novalidate="novalidate">
+      <div class="govuk-grid-column-two-thirds">
+        {% if successMessage %}
+          {{ govukNotificationBanner({
+          type: 'success',
+          text: successMessage
+        }) }}
+        {% endif %}
+        <span class="govuk-caption-l">{{ data['groupName'] or 'Your test forms' }}</span>
+        <h1 class="govuk-heading-l">{{ pageTitle }}</h1>
+      </div>
+
+      {% if groupMembers %}
+        <div class="govuk-grid-column-full">
+          <table class="govuk-table govuk-table--small-text-until-tablet">
+            <thead class="govuk-table__head">
+              <tr class="govuk-table__row">
+                <th scope="col" class="govuk-table__header">Name</th>
+                <th scope="col" class="govuk-table__header">Email</th>
+                <th scope="col" class="govuk-table__header">Role</th>
+                <th scope="col" class="govuk-table__header govuk-table__header--numeric">Action</th>
+              </tr>
+            </thead>
+            <tbody class="govuk-table__body">
+              {% for member in groupMembers %}
+                <tr class="govuk-table__row">
+                  <td class="govuk-table__cell">{{ member.userName }}</td>
+                  <td class="govuk-table__cell">{{ member.userEmail }}</td>
+                  <td class="govuk-table__cell">{{ member.userType }}</td>
+                  <td class="govuk-table__cell govuk-table__cell--numeric">
+                    <div class="govuk-button-group form-action-group app-page-list__button-group">
+                      {% if member.userType == 'Group admin' %}
+                        {{ govukButton({
+                        html: 'Make editor <span class="govuk-visually-hidden"> ' + member.userName + '</span>',
+                        name: "action",
+                        value: "changeUserTypeRow-" + loop.index0,
+                        classes: "govuk-button--secondary"
+                      }) }}
+                      {% else %}
+                        {{ govukButton({
+                        html: 'Make group admin <span class="govuk-visually-hidden"> ' + member.userName + '</span>',
+                        name: "action",
+                        value: "changeUserTypeRow-" + loop.index0,
+                        classes: "govuk-button--secondary"
+                      }) }}
+                      {% endif %}
+                      {{ govukButton({
+                      html: 'Remove <span class="govuk-visually-hidden"> ' + member.userName + '</span>',
+                      name: "action",
+                      value: "removeUserRow-" + loop.index0,
+                      classes: "govuk-button--secondary"
+                    }) }}
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endif %}
+
+      <div class="govuk-grid-column-two-thirds">
+
+        {{ govukButton({
+          text: "Add an editor or group admin",
+          href: "add-new-member"
+        }) }}
+
+        {% set orgAdminUserTypeDetailsHTML %}
+        <p class="govuk-body">
+          An editor can edit forms in a group but cannot make forms live.
+        </p>
+        <p class="govuk-body">
+          A group admin can edit forms, make forms live and add editors to a group.
+        </p>
+        <p class="govuk-body">
+          Only an organisation admin can add a group admin to a group.
+        </p>
+        {% endset %}
+
+        {{ govukDetails({
+          summaryText: "What can ‘editors’ and ‘group admins’ do?",
+          html: orgAdminUserTypeDetailsHTML
+        }) }}
+
+      </div>
+    </form>
+  </div>
+{% endblock content %}
